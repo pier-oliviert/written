@@ -7,3 +7,7 @@ module Blank
     document
   end
 end
+
+if defined?(Rails)
+  require 'blank/railtie'
+end
