@@ -2,8 +2,14 @@ source 'https://rubygems.org'
 
 gem 'rails', '~>4.2'
 
-gem 'sass-rails', '~> 5.0'
-gem 'coffee-rails', '~> 4.1.0'
+gem 'rake'
+gem 'sprockets'
+gem 'coffee-script'
+gem 'sass'
+gem 'uglifier'
+
+gem 'therubyracer'
 
 gem 'thin'
-gem 'byebug'
+
+gem 'byebug', group: [:development, :test]
