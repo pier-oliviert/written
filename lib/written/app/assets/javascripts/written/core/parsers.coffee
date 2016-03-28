@@ -16,6 +16,6 @@ class Parsers
     ]
 
 parsers = new Parsers()
-@Blank.Parsers = ->
+@Written.Parsers = ->
   parsers
 

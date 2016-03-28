@@ -1,4 +1,4 @@
-Blank.Parsers().add 'image', class
+Written.Parsers().add 'image', class
   rule: /^(!{1}\[([^\]]+)\])(\(([^\s]+)?\))$/i
 
   constructor: (node) ->
@@ -9,7 +9,7 @@ Blank.Parsers().add 'image', class
     @match?
 
   render: =>
-    @figure = Blank.Elements.content.querySelector("[as='Editor.Image']").cloneNode(true)
+    @figure = Written.Elements.content.querySelector("[as='Editor.Image']").cloneNode(true)
 
     @caption = @figure.querySelector('figcaption')
     @caption.appendChild document.createTextNode(@match[1])

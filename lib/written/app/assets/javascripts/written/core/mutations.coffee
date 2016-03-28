@@ -1,4 +1,4 @@
-class @Blank.Mutations
+class @Written.Mutations
   constructor: (mutations, editor) ->
     @removed = []
     @appended = []

@@ -1,4 +1,4 @@
-Blank.Parsers().add 'code', class
+Written.Parsers().add 'code', class
   rules:
     start: /((~{3,})([a-z]+)?)(.+)?/i
 
@@ -75,7 +75,7 @@ Blank.Parsers().add 'code', class
 
     for match in @matches()
 
-      code = "<code as='Blank.Code'>".toHTML()
+      code = "<code as='Written.Code'>".toHTML()
       match.node.parentElement.replaceChild(code, match.node)
 
       if match.inline?

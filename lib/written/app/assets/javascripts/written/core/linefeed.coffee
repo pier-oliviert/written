@@ -1,4 +1,4 @@
-class @Blank.LineFeed
+class @Written.LineFeed
   constructor: (@fragment) ->
 
   injectAt: (offset) ->

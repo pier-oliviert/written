@@ -1,4 +1,4 @@
-Blank.Parsers().add 'lists', class
+Written.Parsers().add 'lists', class
   rules: [
     {
       type: 'ul'
