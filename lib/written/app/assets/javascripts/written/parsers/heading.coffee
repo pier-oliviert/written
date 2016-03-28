@@ -1,4 +1,4 @@
-Written.Parsers().add 'headers', class
+Written.Parsers.add 'headers', class
   rule: /^(#{1,6}) /i
 
   constructor: (node) ->

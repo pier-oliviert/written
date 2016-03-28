@@ -1,4 +1,4 @@
-Written.Parsers().add 'link', class
+Written.Parsers.add 'link', class
   rule: /!{0}(\[([^\]]+)\])(\(([^\)]+)\))/gi
 
   constructor: (node, el) ->

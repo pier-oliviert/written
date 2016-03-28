@@ -1,3 +1,3 @@
-#= require 'written/all'
+#= require 'written'
 
 new Written(document.getElementById('Editor'))

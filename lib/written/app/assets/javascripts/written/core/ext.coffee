@@ -25,7 +25,7 @@ HTMLPreElement::toString = ->
 
 HTMLElement::toString = ->
   if @nodeName == 'FIGURE'
-    @querySelector('figcaption').textContent
+    (@querySelector('figcaption') || this).textContent
   else
     @textContent
 

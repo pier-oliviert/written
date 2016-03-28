@@ -9,7 +9,7 @@ class @Written
     if @parsers?
       return
 
-    @parsers = Written.Parsers().sort()
+    @parsers = Written.Parsers.sort()
 
     @extensions = Written.Extensions.map (ext) =>
       new ext(this)
@@ -264,5 +264,22 @@ class @Written
 
     texts.join '\n'
 
+Written.Extensions = new class extends Array
+  
 
-Written.Extensions = []
+Written.Parsers = new class
+  constructor: ->
+    @store = {}
+
+  add: (name, kls) =>
+    @store[name] = kls
+
+  sort: =>
+    [
+      @store.lists
+      @store.code
+      @store.image
+      @store.headers
+      @store.link
+      @store.word
+    ]

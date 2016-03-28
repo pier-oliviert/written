@@ -1,4 +1,4 @@
-Written.Parsers().add 'code', class
+Written.Parsers.add 'code', class
   rules:
     start: /((~{3,})([a-z]+)?)(.+)?/i
 

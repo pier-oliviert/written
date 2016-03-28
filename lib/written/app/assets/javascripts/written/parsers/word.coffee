@@ -1,4 +1,4 @@
-Written.Parsers().add 'word', class
+Written.Parsers.add 'word', class
   rule: /((\*{1,2})[^\*]+(\*{1,2}))/gi
 
   constructor: (node, el) ->

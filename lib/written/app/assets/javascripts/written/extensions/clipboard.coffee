@@ -1,5 +1,5 @@
-Written.Extensions.push class ClipBoard
-  constructor: (editor) ->
+class ClipBoard
+  constructor: (editor, hooks) ->
     @editor = editor
     @editor.element().addEventListener 'paste', @paste
 

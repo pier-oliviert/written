@@ -1,4 +1,4 @@
-Written.Parsers().add 'image', class
+Written.Parsers.add 'image', class
   rule: /^(!{1}\[([^\]]+)\])(\(([^\s]+)?\))$/i
 
   constructor: (node) ->
@@ -9,12 +9,15 @@ Written.Parsers().add 'image', class
     @match?
 
   render: =>
-    @figure = Written.Elements.content.querySelector("[as='Editor.Image']").cloneNode(true)
+    @figure = "<figure><img contenteditable='false'/><figcaption /></figure>".toHTML()
 
-    @caption = @figure.querySelector('figcaption')
-    @caption.appendChild document.createTextNode(@match[1])
-    @caption.appendChild document.createTextNode(@match[3])
+    caption = @figure.querySelector('figcaption')
+    caption.appendChild document.createTextNode(@match[1])
+    caption.appendChild document.createTextNode(@match[3])
     if @match[4]?
-      @caption.setAttribute('name', @match[4])
+      caption.setAttribute('name', @match[4])
+
+    img = @figure.querySelector('img')
+    img.src = @match[4]
 
     return @figure
