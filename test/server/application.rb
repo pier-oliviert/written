@@ -1,4 +1,4 @@
-module BlankDevApplication
+module WrittenDevApplication
   class Application < Rails::Application
     config.eager_load = false
     secrets.secret_key_base = "Something not so secret :)"

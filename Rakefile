@@ -9,11 +9,11 @@ namespace :test do
   desc 'Run Javascript tests'
   task :javascript do
     require 'rails'
-    require 'blank'
+    require 'written'
     require 'sprockets'
     require 'tempfile'
     environment = Sprockets::Environment.new
-    Blank::Railtie.instance.paths['app/assets'].existent.each do |path|
+    ThoughtJS::Railtie.instance.paths['app/assets'].existent.each do |path|
       environment.append_path path
     end
 
@@ -56,7 +56,7 @@ task :server do
 
   Dir.chdir 'test/server' do
     require "rails"
-    require 'blank'
+    require 'written'
 
     %w(
       action_controller
@@ -71,7 +71,7 @@ task :server do
 
     Rails.env = ENV['RAILS_ENV']
     require 'rails/commands/server'
-    require_relative 'test/rails/application'
+    require_relative 'test/server/application'
 
     server = Rails::Server.new
     server.options[:Port] ||= 3000

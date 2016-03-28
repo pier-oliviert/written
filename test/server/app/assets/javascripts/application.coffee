@@ -1,3 +1,3 @@
-#= require 'blank/all'
+#= require 'written/all'
 
-new Blank(document.getElementById('Editor'))
+new Written(document.getElementById('Editor'))

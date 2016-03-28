@@ -1,5 +1,5 @@
-run BlankDevApplication::Application.initialize!
+run WrittenDevApplication::Application.initialize!
 
-BlankDevApplication::Application.routes.draw do 
+WrittenDevApplication::Application.routes.draw do 
   root 'posts#show'
 end

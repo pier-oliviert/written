@@ -51,7 +51,6 @@ GEM
       activesupport (>= 4.1.0)
     i18n (0.7.0)
     json (1.8.3)
-    libv8 (3.16.14.7)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
@@ -89,17 +88,16 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
-    ref (1.0.5)
     sass (3.4.19)
+    specterjs (0.0.1)
+      rails (~> 4.2)
+      thin (~> 1.6)
     sprockets (3.2.0)
       rack (~> 1.0)
     sprockets-rails (2.3.3)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
-    therubyracer (0.12.2)
-      libv8 (~> 3.16.14.0)
-      ref
     thin (1.6.4)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
@@ -121,8 +119,8 @@ DEPENDENCIES
   rails (~> 4.2)
   rake
   sass
+  specterjs
   sprockets
-  therubyracer
   thin
   uglifier
 

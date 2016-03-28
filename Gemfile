@@ -8,8 +8,8 @@ gem 'coffee-script'
 gem 'sass'
 gem 'uglifier'
 
-gem 'therubyracer'
-
 gem 'thin'
 
 gem 'byebug', group: [:development, :test]
+
+gem 'specterjs', group: [:development]
