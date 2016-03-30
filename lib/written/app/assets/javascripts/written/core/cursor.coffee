@@ -1,36 +1,39 @@
-class @Written.Cursor
-  constructor: (offset) ->
-    @selection = window.getSelection()
-    @origin = @selection.focusNode
+class Written.Cursor
+  constructor: (element, selection) ->
+    @element = ->
+      element
+    @selection = selection
+    children = Array.prototype.slice.call(@element().children, 0)
+    @offset = selection.focusOffset
+    node = selection.focusNode
 
-    @offset = offset
+    while node && !children.includes(node)
+      parent = node.parentElement
 
-  focus: (line) ->
-    while true
-      length = line.toString().length
-      if length >= @offset
+      if parent
+        for child in (parent.childNodes || [])
+          if child == node
+            break
+          else
+            @offset += child.textContent.length
+
+      node = parent
+
+    for child in @element().children
+      if child == node
         break
-      @offset -= Math.max(length + 1, 1)
+      @offset += child.textContent.length
 
-      if line.nextSibling?
-        line = line.nextSibling
-        continue
-      break
+  focus: (offset, node) =>
+    offset ||= @offset
+    node ||= @element().firstElementChild
 
-    @focus = ->
-      line
+    while node && (node.textContent.length) < offset
+      offset -= (node.textContent.length)
+      node = node.nextElementSibling
 
-    @focus()
 
-  update: (walker, force = false) ->
-    line = walker.root
-
-    if !force && @selection.focusNode == @origin && line.contains(@origin)
-      return
-
-    range = line.getRange(@offset, walker)
-
+    range = node.getRange(offset, document.createTreeWalker(node, NodeFilter.SHOW_TEXT))
     @selection.removeAllRanges()
     @selection.addRange(range)
-
 

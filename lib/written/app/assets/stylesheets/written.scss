@@ -1,11 +1,19 @@
-p {
-  min-height: 1px;
-}
+[data-editor="written"] {
+  p {
+    min-height: 1px;
+  }
 
-h1 {
-  font-size: 3em;
-}
+  h1 {
+    font-size: 3em;
+  }
 
-ul, li {
-  list-style-type: none;
+  ul, li {
+    list-style-type: none;
+  }
+
+  figure {
+    background: gray;
+    img {
+    }
+  }
 }

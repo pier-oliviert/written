@@ -1,16 +1,9 @@
-Written.Parsers.add 'image', class
-  rule: /^(!{1}\[([^\]]+)\])(\(([^\s]+)?\))$/i
-
-  constructor: (node) ->
-    @walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT)
-
-  isMatched: =>
-    @match = @rule.exec(@walker.root.textContent)
-    @match?
-
-  render: =>
+class Image
+  constructor: (match) ->
+    @match = match
     @figure = "<figure><img contenteditable='false'/><figcaption /></figure>".toHTML()
 
+  render: =>
     caption = @figure.querySelector('figcaption')
     caption.appendChild document.createTextNode(@match[1])
     caption.appendChild document.createTextNode(@match[3])
@@ -20,4 +13,6 @@ Written.Parsers.add 'image', class
     img = @figure.querySelector('img')
     img.src = @match[4]
 
-    return @figure
+    @figure
+
+Written.Parsers.Block.register Image, /^(!{1}\[([^\]]+)\])(\(([^\s]+)?\))$/i
