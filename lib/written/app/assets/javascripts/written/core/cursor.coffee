@@ -20,13 +20,25 @@ class Written.Cursor
 
       node = parent
 
-    @currentNode = node
 
     for child in @element().children
       if child == node
         break
       @offset += child.textContent.length
 
+    @currentNode = ->
+      node
+
+
+  offsetAt: (node) ->
+    offset = @offset
+
+    element = @element().firstElementChild
+    while element && element != node
+      offset -= Math.max(element.textContent.length, 1)
+      element = element.nextElementSibling
+
+    offset
 
   focus: (offset, node) =>
     if offset is undefined
@@ -35,8 +47,8 @@ class Written.Cursor
     if node is undefined
       node = @element().firstElementChild
 
-    while node && (node.textContent.length) < offset
-      offset -= (node.textContent.length)
+    while node && Math.max(node.textContent.length, 1) < offset
+      offset -= Math.max(node.textContent.length, 1)
       node = node.nextElementSibling
 
 

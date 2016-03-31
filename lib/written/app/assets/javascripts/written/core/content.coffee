@@ -33,38 +33,50 @@ class @Written
     if oldDocument.toString().localeCompare(newDocument.toString()) == 0
       return
 
-    @observer.pause @update.bind(this, newDocument)
+    @observer.pause @update.bind(this, newDocument, new Written.Cursor(@element(), window.getSelection()))
     @history.push(newDocument)
 
-  update: (document) =>
-    cursor = new Written.Cursor(@element(), window.getSelection())
-
+  update: (document, cursor) =>
     node = document.head
     current = @element().firstElementChild
 
     while node 
-      if node.innerHTML.localeCompare(current.innerHTML) != 0
+      if !current?
+        @element().appendChild(node.cloneNode(true))
+      else if node.innerHTML.localeCompare(current.innerHTML) != 0
         clonedNodeDocument = node.cloneNode(true)
         @element().replaceChild(clonedNodeDocument, current)
         current = clonedNodeDocument
 
       node = node.nextDocumentNode
-      current = current.nextElementSibling
+      if current?
+        current = current.nextElementSibling
 
     cursor.focus()
 
 
   linefeed: (e) =>
     return unless e.which == 13
+    e.preventDefault()
+    e.stopPropagation()
 
+    cursor = new Written.Cursor(@element(), window.getSelection())
     @observer.pause =>
-      e.preventDefault()
-      e.stopPropagation()
 
-      cursor = new Written.Cursor(@element(), window.getSelection())
-      cursor.currentNode.insertAdjacentHTML('afterend', "<p></p>")
-      cursor.focus(0, cursor.currentNode.nextElementSibling)
+      offset = cursor.offset
+      lines = @history.current().toString().split('\n').map (line) ->
+        if line.length < offset
+          offset -= line.length
+        else if offset > 0
+          line = [line.slice(0, offset), '\n', line.slice(offset)].join('')
+          offset = 0
+        line
 
+      document = new Written.Document(lines.join('\n'))
+      cursor.offset += 1
+
+      @update(document, cursor)
+      @history.push(document)
 
 
   toString: =>
