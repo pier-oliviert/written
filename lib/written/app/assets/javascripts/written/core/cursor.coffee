@@ -5,6 +5,7 @@ class Written.Cursor
     @selection = selection
     children = Array.prototype.slice.call(@element().children, 0)
     @offset = selection.focusOffset
+
     node = selection.focusNode
 
     while node && !children.includes(node)
@@ -19,14 +20,20 @@ class Written.Cursor
 
       node = parent
 
+    @currentNode = node
+
     for child in @element().children
       if child == node
         break
       @offset += child.textContent.length
 
+
   focus: (offset, node) =>
-    offset ||= @offset
-    node ||= @element().firstElementChild
+    if offset is undefined
+      offset = @offset
+
+    if node is undefined
+      node = @element().firstElementChild
 
     while node && (node.textContent.length) < offset
       offset -= (node.textContent.length)

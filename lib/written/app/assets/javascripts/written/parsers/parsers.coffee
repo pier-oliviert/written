@@ -31,7 +31,7 @@ Written.Parsers.Block = new class
     elements = []
     currentNode = undefined
     while (line = lines.pop()) != undefined
-      str = line.toString().trim()
+      str = line.toString()
       if !currentNode
         parser = @find(str)
         currentNode = parser.render(str)

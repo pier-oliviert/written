@@ -1,7 +1,7 @@
 class Code
   constructor: (match) ->
     @match = match
-    @node = "<pre data-status='opened' data-strict='true'><code as='Written.Code'></code></pre>".toHTML()
+    @node = "<pre data-status='opened' data-multiline='true'><code as='Written.Code'></code></pre>".toHTML()
 
 
   valid: ->
@@ -14,7 +14,7 @@ class Code
     code = @node.querySelector('code')
     code.appendChild(document.createTextNode(text + "\n"))
 
-    if /(~{3})$/i.test(@text)
+    if /(~{3})$/i.test(text)
       @node.dataset.status = 'closed'
 
     Prism.highlightElement(code, false)

@@ -1,14 +1,3 @@
-String::hashCode = ->
-  hash = 0
-  return hash if this.length == 0
-
-  for i in this.length
-    char = this.charCodeAt(i)
-    hash = ((hash<<5)-hash)+char
-    hash = hash & hash
-
-  return hash
-
 String::toHTML = ->
   el = document.createElement('div')
   el.innerHTML = this

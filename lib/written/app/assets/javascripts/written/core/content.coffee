@@ -8,6 +8,8 @@ class @Written
     @observer = new Written.Observer(@element(), @changed)
     @observer.pause @initialize
 
+    @element().addEventListener('keypress', @linefeed)
+
   initialize: =>
     if @parsers?
       return
@@ -21,7 +23,7 @@ class @Written
     @element().textContent = ''
 
     while node
-      @element().appendChild(node.cloneNode(true))
+      @element().appendChild(node)
       node = node.nextDocumentNode
 
 
@@ -31,31 +33,37 @@ class @Written
     if oldDocument.toString().localeCompare(newDocument.toString()) == 0
       return
 
-    @observer.pause @update.bind(this, oldDocument, newDocument)
+    @observer.pause @update.bind(this, newDocument)
     @history.push(newDocument)
 
-  update: (oldDocument, newDocument) =>
+  update: (document) =>
     cursor = new Written.Cursor(@element(), window.getSelection())
-    node = @element().firstElementChild
 
-    while node
-      nextNode = node.nextElementSibling
-      if oldDocument.texts.indexOf(node.toString()) == -1
-        node.remove()
-      node = nextNode
-
-
-    node = newDocument.head
-    index = 0
+    node = document.head
+    current = @element().firstElementChild
 
     while node 
-      if oldDocument.texts.indexOf(node.toString()) == -1
-        @element().insertBefore(node, @element().children[index])
+      if node.innerHTML.localeCompare(current.innerHTML) != 0
+        clonedNodeDocument = node.cloneNode(true)
+        @element().replaceChild(clonedNodeDocument, current)
+        current = clonedNodeDocument
 
-      index += 1
       node = node.nextDocumentNode
+      current = current.nextElementSibling
 
     cursor.focus()
+
+
+  linefeed: (e) =>
+    return unless e.which == 13
+
+    @observer.pause =>
+      e.preventDefault()
+      e.stopPropagation()
+
+      cursor = new Written.Cursor(@element(), window.getSelection())
+      cursor.currentNode.insertAdjacentHTML('afterend', "<p></p>")
+      cursor.focus(0, cursor.currentNode.nextElementSibling)
 
 
 
@@ -63,7 +71,7 @@ class @Written
     texts = []
     for node in @element().childNodes
       content = node.toString().split('\n').map (line) ->
-        line.trim()
+        line.trimLeft()
 
       texts.push content.join('\n')
 
