@@ -10,6 +10,9 @@ class @Written
 
     @element().addEventListener('keypress', @linefeed)
 
+    cursor = new Written.Cursor(@element(), window.getSelection())
+    cursor.focus(0, @element())
+
   initialize: =>
     if @parsers?
       return
@@ -33,7 +36,7 @@ class @Written
     if oldDocument.toString().localeCompare(newDocument.toString()) == 0
       return
 
-    @observer.pause @update.bind(this, newDocument, new Written.Cursor(@element(), window.getSelection()))
+    @update(newDocument, new Written.Cursor(@element(), window.getSelection()))
     @history.push(newDocument)
 
   update: (document, cursor) =>
@@ -43,7 +46,7 @@ class @Written
     while node 
       if !current?
         @element().appendChild(node.cloneNode(true))
-      else if node.innerHTML.localeCompare(current.innerHTML) != 0
+      else if node.outerHTML.localeCompare(current.outerHTML) != 0
         clonedNodeDocument = node.cloneNode(true)
         @element().replaceChild(clonedNodeDocument, current)
         current = clonedNodeDocument
@@ -51,6 +54,13 @@ class @Written
       node = node.nextDocumentNode
       if current?
         current = current.nextElementSibling
+
+    if current?
+      node = current.nextElementSibling
+      while node
+        nextNode = node.nextElementSibling
+        node.remove()
+        node = nextNode
 
     cursor.focus()
 
@@ -67,13 +77,19 @@ class @Written
       lines = @history.current().toString().split('\n').map (line) ->
         if line.length < offset
           offset -= line.length
-        else if offset > 0
+        else if offset >= 0
           line = [line.slice(0, offset), '\n', line.slice(offset)].join('')
-          offset = 0
+          offset -= line.length
+        offset -= 1
         line
 
+      if offset == 0
+        lines.push('')
+        cursor.offset += 1
+
       document = new Written.Document(lines.join('\n'))
-      cursor.offset += 1
+      if cursor.offset < document.toString().length
+        cursor.offset += 1
 
       @update(document, cursor)
       @history.push(document)
@@ -82,9 +98,7 @@ class @Written
   toString: =>
     texts = []
     for node in @element().childNodes
-      content = node.toString().split('\n').map (line) ->
-        line.trimLeft()
-
+      content = node.toString().split('\n')
       texts.push content.join('\n')
 
     texts.join '\n'

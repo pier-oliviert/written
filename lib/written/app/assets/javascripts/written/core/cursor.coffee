@@ -25,6 +25,7 @@ class Written.Cursor
       if child == node
         break
       @offset += child.textContent.length
+      @offset += 1
 
     @currentNode = ->
       node
@@ -35,7 +36,7 @@ class Written.Cursor
 
     element = @element().firstElementChild
     while element && element != node
-      offset -= Math.max(element.textContent.length, 1)
+      offset -= element.textContent.length
       element = element.nextElementSibling
 
     offset
@@ -47,8 +48,8 @@ class Written.Cursor
     if node is undefined
       node = @element().firstElementChild
 
-    while node && Math.max(node.textContent.length, 1) < offset
-      offset -= Math.max(node.textContent.length, 1)
+    while node.nextElementSibling && node.toString().length < offset
+      offset -= node.textContent.length + 1
       node = node.nextElementSibling
 
 

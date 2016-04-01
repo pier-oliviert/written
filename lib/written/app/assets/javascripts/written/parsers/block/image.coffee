@@ -1,7 +1,7 @@
 class Image
   constructor: (match) ->
     @match = match
-    @figure = "<figure><img contenteditable='false'/><figcaption /></figure>".toHTML()
+    @figure = "<figure><div contenteditable='false'><img/></div><figcaption /></figure>".toHTML()
 
   render: =>
     caption = @figure.querySelector('figcaption')
