@@ -64,7 +64,7 @@ class @Written
         current = current.nextElementSibling
 
     if current?
-      node = current.nextElementSibling
+      node = current
       while node
         nextNode = node.nextElementSibling
         node.remove()
