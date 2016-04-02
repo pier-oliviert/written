@@ -1,16 +1,29 @@
 Written.History = class History
-  constructor: (currentDocument) ->
-    @documents = [currentDocument]
-
-  current: =>
-    @documents[0]
+  constructor: (document) ->
+    @current = document
 
   push: (document) =>
-    @documents.splice(0, 0, document)
-    while @documents.length > 50
-      @documents.pop()
+    previousDocument = @current
+    @current = document
+    previousDocument.nextDocument = document
+    document.previousDocument = previousDocument
 
-  pop: =>
-    documents.pop()
+    @limit()
+
+  previous: =>
+    @current.previousDocument
+
+  next: =>
+    @current.nextDocument
+
+  limit: =>
+    document = @current
+    for i in [0...50]
+      if document.previousDocument?
+        document = document.previousDocument
+      else
+        break
+
+    document.previousDocument = undefined
 
 

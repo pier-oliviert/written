@@ -1,7 +1,7 @@
 #= require ../parsers/parsers
 
 Written.Document = class
-  constructor: (textContent, parsers) ->
+  constructor: (textContent) ->
     @texts = new Array()
 
     @head = Written.Parsers.Block.parse(textContent.split('\n').reverse())
@@ -13,6 +13,7 @@ Written.Document = class
       text = node.toString()
       @texts.push(text)
       node = node.nextDocumentNode
+
 
 
   toString: =>

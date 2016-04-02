@@ -53,7 +53,7 @@ class Written.Cursor
       node = node.nextElementSibling
 
 
-    range = node.getRange(offset, document.createTreeWalker(node, NodeFilter.SHOW_TEXT))
+    range = node.getRange(Math.min(offset, node.textContent.length), document.createTreeWalker(node, NodeFilter.SHOW_TEXT))
     @selection.removeAllRanges()
     @selection.addRange(range)
 

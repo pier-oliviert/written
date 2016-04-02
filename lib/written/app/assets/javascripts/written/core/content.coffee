@@ -9,9 +9,9 @@ class @Written
     @observer.pause @initialize
 
     @element().addEventListener('keypress', @linefeed)
+    @element().addEventListener('keydown', @undo)
+    @element().addEventListener('keydown', @redo)
 
-    cursor = new Written.Cursor(@element(), window.getSelection())
-    cursor.focus(0, @element())
 
   initialize: =>
     if @parsers?
@@ -19,28 +19,36 @@ class @Written
 
     Written.Parsers.freeze()
 
-    @history = new Written.History(new Written.Document(@toString(), Written.Parsers))
+    document = new Written.Document(@toString())
+    cursor = new Written.Cursor(@element(), window.getSelection())
+    document.cursor = cursor
+
+    @history = new Written.History(document)
     
-    node = @history.current().head
+    node = @history.current.head
 
     @element().textContent = ''
 
     while node
-      @element().appendChild(node)
+      @element().appendChild(node.cloneNode(true))
       node = node.nextDocumentNode
+
+    document.cursor.focus(0, @element())
 
 
   changed: (e) =>
-    oldDocument = @history.current()
+    oldDocument = @history.current
     newDocument = new Written.Document(@toString())
+    newDocument.cursor = new Written.Cursor(@element(), window.getSelection())
     if @element().children.length > 0 && oldDocument.toString().localeCompare(newDocument.toString()) == 0
       return
 
-    @update(newDocument, new Written.Cursor(@element(), window.getSelection()))
+    @update(newDocument)
     @history.push(newDocument)
 
-  update: (document, cursor) =>
+  update: (document) =>
     node = document.head
+    cursor = document.cursor
     current = @element().firstElementChild
 
     while node 
@@ -74,7 +82,7 @@ class @Written
     @observer.pause =>
 
       offset = cursor.offset
-      lines = @history.current().toString().split('\n').map (line) ->
+      lines = @history.current.toString().split('\n').map (line) ->
         if line.length < offset
           offset -= line.length
         else if offset >= 0
@@ -88,12 +96,36 @@ class @Written
         cursor.offset += 1
 
       document = new Written.Document(lines.join('\n'))
+      document.cursor = cursor
       if cursor.offset < document.toString().length
         cursor.offset += 1
 
-      @update(document, cursor)
+      @update(document)
       @history.push(document)
 
+
+  undo: (e) =>
+    if e.code == 'KeyZ' && e.metaKey && !e.shiftKey
+      e.preventDefault()
+      e.stopPropagation()
+    else
+      return
+
+    if document = @history.previous()
+      @history.current = document
+      cursor = new Written.Cursor(@element(), window.getSelection())
+      @update(@history.current)
+
+  redo: (e) =>
+    if e.code == 'KeyZ' && e.metaKey && e.shiftKey
+      e.preventDefault()
+      e.stopPropagation()
+    else
+      return
+
+    if document = @history.next()
+      @history.current = document
+      @update(@history.current)
 
   toString: =>
     texts = []
