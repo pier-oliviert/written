@@ -1,7 +1,7 @@
 class Code
   constructor: (match) ->
     @match = match
-    @node = "<pre data-status='opened' data-multiline='true'><code as='Written.Code'></code></pre>".toHTML()
+    @node = "<pre data-status='opened' data-multiline='true'><code></code></pre>".toHTML()
 
 
   valid: ->
