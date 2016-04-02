@@ -16,7 +16,7 @@ class Written.Cursor
           if child == node
             break
           else
-            @offset += child.textContent.length
+            @offset += child.toString().length
 
       node = parent
 
@@ -24,7 +24,7 @@ class Written.Cursor
     for child in @element().children
       if child == node
         break
-      @offset += child.textContent.length
+      @offset += child.toString().length
       @offset += 1
 
     @currentNode = ->
@@ -36,7 +36,7 @@ class Written.Cursor
 
     element = @element().firstElementChild
     while element && element != node
-      offset -= element.textContent.length
+      offset -= element.toString().length
       element = element.nextElementSibling
 
     offset
@@ -49,11 +49,11 @@ class Written.Cursor
       node = @element().firstElementChild
 
     while node.nextElementSibling && node.toString().length < offset
-      offset -= node.textContent.length + 1
+      offset -= node.toString().length + 1
       node = node.nextElementSibling
 
 
-    range = node.getRange(Math.min(offset, node.textContent.length), document.createTreeWalker(node, NodeFilter.SHOW_TEXT))
+    range = node.getRange(Math.min(offset, node.toString().length), document.createTreeWalker(node, NodeFilter.SHOW_TEXT))
     @selection.removeAllRanges()
     @selection.addRange(range)
 
