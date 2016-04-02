@@ -18,7 +18,7 @@ Written.History = class History
 
   limit: =>
     document = @current
-    for i in [0...50]
+    for i in [0...1000]
       if document.previousDocument?
         document = document.previousDocument
       else
