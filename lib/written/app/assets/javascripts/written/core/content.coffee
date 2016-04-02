@@ -33,7 +33,7 @@ class @Written
   changed: (e) =>
     oldDocument = @history.current()
     newDocument = new Written.Document(@toString())
-    if oldDocument.toString().localeCompare(newDocument.toString()) == 0
+    if @element().children.length > 0 && oldDocument.toString().localeCompare(newDocument.toString()) == 0
       return
 
     @update(newDocument, new Written.Cursor(@element(), window.getSelection()))
