@@ -17,7 +17,8 @@ class Code
     if /(~{3})$/i.test(text)
       @node.dataset.status = 'closed'
 
-    Prism.highlightElement(code, false)
+    if Code.parseSyntax?
+      Code.parseSyntax(code)
 
     @node
 

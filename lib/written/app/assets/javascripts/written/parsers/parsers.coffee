@@ -14,6 +14,14 @@ Written.Parsers.Block = new class
     Object.freeze(this)
     Object.freeze(@parsers)
 
+  get: (name) ->
+    parser = @parsers.find (parser) ->
+      parser.parser.name.localeCompare(name) == 0
+
+    if parser
+      parser.parser
+
+
 
   register: (parser, rule, defaultParser = false) ->
     if defaultParser
@@ -74,6 +82,13 @@ Written.Parsers.Inline = new class
   freeze: ->
     Object.freeze(this)
     Object.freeze(@parsers)
+
+  get: (name) ->
+    parser = @parsers.find (parser) ->
+      parser.parser.name.localeCompare(name) == 0
+
+    if parser
+      parser.parser
 
 
   register: (parser, rule) ->
