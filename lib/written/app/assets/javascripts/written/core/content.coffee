@@ -113,7 +113,6 @@ class @Written
 
     if document = @history.previous()
       @history.current = document
-      cursor = new Written.Cursor(@element(), window.getSelection())
       @update(@history.current)
 
   redo: (e) =>
