@@ -14,8 +14,19 @@
   }
 
   figure {
-    background: gray;
+    background: rgba(230,230,230,1);
+
+    & > div {
+      display: flex;
+      min-height: 200px;
+    }
+
     img {
+      margin: auto;
+    }
+
+    figcaption {
+      padding: 4px;
     }
   }
 }
