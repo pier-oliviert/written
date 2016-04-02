@@ -6,33 +6,6 @@ task default: %w[test]
 
 
 namespace :test do
-  desc 'Run Javascript tests'
-  task :javascript do
-    require 'rails'
-    require 'written'
-    require 'sprockets'
-    require 'tempfile'
-    environment = Sprockets::Environment.new
-    ThoughtJS::Railtie.instance.paths['app/assets'].existent.each do |path|
-      environment.append_path path
-    end
-
-    environment.append_path 'test/javascript'
-
-    test = Tempfile.new 'test.js'
-    test.write environment['test.js']
-    test.rewind
-
-    runner = Tempfile.new 'runner.js'
-    runner.write environment['runner.js']
-    runner.rewind
-
-    # Use system so it's possible to know if the tests were successful
-    # based on the return value
-    system("phantomjs #{runner.path} #{test.path}")
-    test.close
-    runner.close
-  end
 
   Rake::TestTask.new do |t|
     t.name = 'ruby'
@@ -80,4 +53,21 @@ task :server do
 
     server.start
   end
+end
+
+desc 'Compile assets for release'
+task :compile do
+  require 'bundler/setup'
+  ENV['RAILS_ENV'] ||= 'development'
+  Bundler.require(:default, ENV['RAILS_ENV'])
+  
+  environment = Sprockets::Environment.new
+
+  environment.append_path 'lib/written/app/assets/javascripts'
+  environment.append_path 'lib/written/app/assets/stylesheets'
+
+  manifest = Sprockets::Manifest.new(environment, 'build/')
+  manifest.compile('written.*')
+
+
 end
