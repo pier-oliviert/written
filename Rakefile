@@ -66,7 +66,7 @@ task :compile do
   environment.append_path 'lib/written/app/assets/javascripts'
   environment.append_path 'lib/written/app/assets/stylesheets'
 
-  manifest = Sprockets::Manifest.new(environment, 'build/')
+  manifest = Sprockets::Manifest.new(environment, 'build/manifest.json')
   manifest.compile('written.*')
 
 
