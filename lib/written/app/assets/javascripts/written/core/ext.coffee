@@ -11,7 +11,7 @@ Text::toString = ->
 
 HTMLOListElement::toString = HTMLUListElement::toString = ->
   texts = Array.prototype.slice.call(@children).map (li) ->
-    li.textContent
+    li.toString()
   texts.join("\n")
 
 HTMLDivElement::toString = ->
@@ -25,6 +25,9 @@ HTMLPreElement::toString = ->
     @textContent.substr(0, @textContent.length - 1)
   else
     @textContent
+
+HTMLAnchorElement::toString = ->
+  @textContent
 
 HTMLElement::toString = ->
   if @nodeName == 'FIGURE'

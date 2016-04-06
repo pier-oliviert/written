@@ -12,11 +12,14 @@ class Written.Cursor
       parent = node.parentElement
 
       if parent
-        for child in (parent.childNodes || [])
-          if child == node
-            break
-          else
-            @offset += child.toString().length
+        child = node.previousSibling
+
+        while child
+          @offset += child.toString().length
+          child = child.previousSibling
+
+        if node.nodeName == 'LI'
+          this.offset += Array.prototype.indexOf.call(parent.children, node)
 
       node = parent
 
