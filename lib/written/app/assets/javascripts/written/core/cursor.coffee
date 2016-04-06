@@ -18,7 +18,7 @@ class Written.Cursor
           @offset += child.toString().length
           child = child.previousSibling
 
-        if node.nodeName == 'LI'
+        if node instanceof HTMLLIElement
           this.offset += Array.prototype.indexOf.call(parent.children, node)
 
       node = parent
