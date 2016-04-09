@@ -9,4 +9,9 @@ class Strong
     @node.appendChild(document.createTextNode(@match[0]))
     textNode.parentElement.replaceChild(@node, strong)
 
+    @node
+
+  toHTMLString: (node) ->
+    "<strong>#{node.toString().slice(2,-2)}</strong>"
+
 Written.Parsers.Inline.register Strong, /((\*{2})[^\*]+(\*{2}))/gi

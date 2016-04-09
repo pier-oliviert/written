@@ -16,5 +16,15 @@ Written.Document = class
 
 
 
+  toHTMLString: =>
+    text = ''
+    node = @head
+
+    while node
+      text += node.toHTMLString()
+      node = node.nextDocumentNode
+
+    text
+
   toString: =>
     @texts.join('\n')

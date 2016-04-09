@@ -11,8 +11,35 @@ class OList
     valid
 
   render: (text) =>
-    @node.appendChild("<li>#{text}</li>".toHTML())
+    li = "<li>#{text}</li>".toHTML()
+
+    li.toHTMLString = (node) ->
+      text = ''
+      child = node.firstChild
+      while child
+        if child.toHTMLString?
+          text += child.toHTMLString()
+        else
+          text += child.toString()
+
+        child = child.nextSibling
+
+      "<li>#{text.replace(/^\d+\.\s/i, '')}</li>"
+
+    @node.appendChild(li)
     @node
+
+  toHTMLString: (node) ->
+    child = node.firstChild
+    text = ''
+    while child
+      if child.toHTMLString?
+        text += child.toHTMLString(child)
+      else
+        text += child.toString()
+      child = child.nextSibling
+
+    "<ol>#{text}</ol>"
 
 Written.Parsers.Block.register OList, OList::rule
 

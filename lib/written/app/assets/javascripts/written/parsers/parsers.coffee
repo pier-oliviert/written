@@ -43,6 +43,7 @@ Written.Parsers.Block = new class
       if !currentNode
         parser = @find(str)
         currentNode = parser.render(str)
+        currentNode.toHTMLString = parser.toHTMLString.bind(parser, currentNode)
         elements.push(currentNode)
         continue
 
@@ -51,6 +52,7 @@ Written.Parsers.Block = new class
         currentNode.nextDocumentNode = parser.render(str)
         currentNode = currentNode.nextDocumentNode
         currentNode.writtenNodeParser = parser
+        currentNode.toHTMLString = parser.toHTMLString.bind(parser, currentNode)
         elements.push(currentNode)
         continue
       else if currentNode.writtenNodeParser.valid(str)
@@ -61,6 +63,7 @@ Written.Parsers.Block = new class
         currentNode.nextDocumentNode = parser.render(str)
         currentNode = currentNode.nextDocumentNode
         currentNode.writtenNodeParser = parser
+        currentNode.toHTMLString = parser.toHTMLString.bind(parser, currentNode)
         elements.push(currentNode)
 
     elements[0]
@@ -104,7 +107,9 @@ Written.Parsers.Inline = new class
 
       while walker.nextNode()
         if match = p.rule.exec(walker.currentNode.textContent)
-          new p.parser(match).render(walker.currentNode)
+          parser = new p.parser(match)
+          node = parser.render(walker.currentNode)
+          node.toHTMLString = parser.toHTMLString.bind(parser, node)
 
 
   isLeafNode: (node) ->

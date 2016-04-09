@@ -13,4 +13,9 @@ class Link
     @node.appendChild(document.createTextNode(@match[3]))
     textNode.parentElement.replaceChild(@node, anchor)
 
+    @node
+
+  toHTMLString: (node) ->
+    "<a href='#{node.href}'>#{this.match[2]}</a>"
+
 Written.Parsers.Inline.register Link, /!{0}(\[([^\]]+)\])(\(([^\)]+)\))/gi

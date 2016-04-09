@@ -15,4 +15,7 @@ class Image
 
     @figure
 
+  toHTMLString: (node) ->
+    "<figure><img src='#{this.match[4]}'/><figcaption>#{this.match[2]}</figcaption></figure>"
+
 Written.Parsers.Block.register Image, /^(!{1}\[([^\]]+)\])(\(([^\s]+)?\))$/i
