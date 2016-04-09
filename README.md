@@ -1,3 +1,28 @@
 # Written
 
-Written is a customizable WYSIWYG markdown editor focussed on **ease of use and extensibility**. 
+Written is an easy to use, customizable WYSIWYG markdown editor. Built for evergreen browsers, it is a standalone editor with **zero dependency**. Based on the idea of [iA Writer](https://ia.net/writer/mac/), this editor uses HTML to render your text as it should look.
+
+As you type, your text is parsed and the document take shapes. Making you look at your draft like you would on the final product. Because Markdown you *type* the style of your text, you can start your text on a different editor and copy/paste it into Written. The style will always carry over.
+
+### Easy to style
+
+Paragraphs are paragraphs, lists are lists and headers are... you got it, headers. This allows you to easily include Written in your project and style it very quickly to its surrounding. Ease of customization is one of the thing that drove the creation of Written.
+
+The editor also allows you to cherry-pick the markdown feature you wish to support on your site. You can also create your own parser if you need something very specific that doesn't come out of the box.
+
+
+### How to use
+
+To start using Written, you just have to create a new editor.
+
+```javascript
+  new Written(document.querySelector('#Editor'))
+```
+
+You can retrieve the document either as a markdown text, or a HTML string. For storage purposes, you might want to store the HTML string from the current document
+
+```javascript
+  var html = document.querySelector('#Editor').instance.history.current.toHTMLString()
+
+  var markdown = document.querySelector('#Editor').instance.history.current.toString()
+```
