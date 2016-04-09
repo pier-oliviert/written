@@ -17,6 +17,9 @@ class @Written
     if @parsers?
       return
 
+    if @element().contentEditable != 'true'
+      @element().contentEditable = 'true'
+
     Written.Parsers.freeze()
 
     document = new Written.Document(@toString())
