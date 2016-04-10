@@ -60,7 +60,7 @@ class @Written
     cursor = document.cursor
     current = @element().firstElementChild
 
-    while node 
+    while node
       if !current?
         @element().appendChild(node.cloneNode(true))
       else if node.outerHTML.localeCompare(current.outerHTML) != 0

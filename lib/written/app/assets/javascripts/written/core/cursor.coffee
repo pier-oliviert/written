@@ -57,6 +57,12 @@ class Written.Cursor
 
 
     range = node.getRange(Math.min(offset, node.toString().length), document.createTreeWalker(node, NodeFilter.SHOW_TEXT))
-    @selection.removeAllRanges()
-    @selection.addRange(range)
+
+    if @offsetDiffersBetween(@selection, range)
+      @selection.removeAllRanges()
+      @selection.addRange(range)
+
+  offsetDiffersBetween: (selection, range) ->
+    selection.focusNode != range.startContainer ||
+    selection.focusOffset != range.startOffset
 
