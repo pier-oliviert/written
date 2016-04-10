@@ -1,5 +1,5 @@
 class OList
-  rule: /^(\d\.\s)(.+)/i
+  rule: /^(\d\.\s)(.*)/i
   constructor: (match) ->
     @match = match
     @node = "<ol data-status='opened'></ol>".toHTML()

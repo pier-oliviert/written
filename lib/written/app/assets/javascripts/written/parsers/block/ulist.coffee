@@ -1,5 +1,5 @@
 class UList
-  rule: /^(-\s)(.+)/i
+  rule: /^(-\s)(.*)/i
   constructor: (match) ->
     @match = match
     @node = "<ul data-status='opened'></ul>".toHTML()
