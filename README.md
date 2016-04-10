@@ -29,8 +29,20 @@ You can retrieve the document either as a markdown text, or a HTML string. For s
 
 ### Document
 
-Documents are the foundation of
+Based on the document system described in [Trix](https://github.com/basecamp/trix), a document is created whenever the text is modified in the editor. Document's job is to store the cursor position as well as the HTML elements rendered by the parser.
+
+This means that Written can render text from a document and also position the cursor at the right place.
+
+Those documents are then stored in a history that Written will then use to implement the undo/redo feature.
 
 ### On Change Events
 
-Written dispatch an event 
+Written dispatch an event whenever text changes on the Editor. To receive update when the editor change, just add an event listener to ```written:changed``` event.
+
+```javascript
+  document.addEventListener('written:changed', function(event) {
+    let document = event.detail.document
+    document.toHTMLString() // HTML version
+    document.toString() // Markdown version
+  })
+```
