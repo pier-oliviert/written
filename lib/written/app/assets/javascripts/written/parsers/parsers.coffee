@@ -1,118 +1,27 @@
-Written.Parsers = {
-  freeze: ->
-    Written.Parsers.Block.freeze()
-    Written.Parsers.Inline.freeze()
-}
-
-Written.Parsers.Block = new class
+class @Written.Parsers
   constructor: ->
-    @parsers = []
+    @block = new Written.Parsers.Block()
+    @inline = new Written.Parsers.Inline()
 
-  freeze: ->
-    @parsers.push this.defaultParser
+  use: (type, name) ->
+    if type != 'block' && type != 'inline'
+      raise 'error: Written.Parsers can either be "block" or "inline"'
+      return
 
-    Object.freeze(this)
-    Object.freeze(@parsers)
+    @[type].use(name)
 
-  get: (name) ->
-    parser = @parsers.find (parser) ->
-      parser.parser.name.localeCompare(name) == 0
-
-    if parser
-      parser.parser
-
-
-
-  register: (parser, rule, defaultParser = false) ->
-    if defaultParser
-      this.defaultParser = {
-        rule: rule,
-        parser: parser
-      }
-    else
-      @parsers.push {
-        rule: rule,
-        parser: parser
-      }
-
-  parse: (lines) =>
-    elements = []
-    currentNode = undefined
-    while (line = lines.pop()) != undefined
-      str = line.toString()
-      if !currentNode
-        parser = @find(str)
-        currentNode = parser.render(str)
-        currentNode.toHTMLString = parser.toHTMLString.bind(parser, currentNode)
-        elements.push(currentNode)
-        continue
-
-      if currentNode.dataset.status != 'opened'
-        parser = @find(str)
-        currentNode.nextDocumentNode = parser.render(str)
-        currentNode = currentNode.nextDocumentNode
-        currentNode.writtenNodeParser = parser
-        currentNode.toHTMLString = parser.toHTMLString.bind(parser, currentNode)
-        elements.push(currentNode)
-        continue
-      else if currentNode.writtenNodeParser.valid(str)
-        currentNode.writtenNodeParser.render(str)
-        continue
-      else
-        parser = @find(str)
-        currentNode.nextDocumentNode = parser.render(str)
-        currentNode = currentNode.nextDocumentNode
-        currentNode.writtenNodeParser = parser
-        currentNode.toHTMLString = parser.toHTMLString.bind(parser, currentNode)
-        elements.push(currentNode)
-
-    elements[0]
-
-  find: (str) ->
-    parser = undefined
-    for p in @parsers
-      if match = p.rule.exec(str)
-        parser = new p.parser(match)
-        break
-
-    return parser
-
-
-Written.Parsers.Inline = new class
-  constructor: ->
-    @parsers = []
-
-  freeze: ->
-    Object.freeze(this)
-    Object.freeze(@parsers)
-
-  get: (name) ->
-    parser = @parsers.find (parser) ->
-      parser.parser.name.localeCompare(name) == 0
-
-    if parser
-      parser.parser
-
-
-  register: (parser, rule) ->
-    @parsers.push {
-      rule: rule,
-      parser: parser
+  available: ->
+    {
+      block: Written.Parsers.Block.parsers.available,
+      inline: Written.Parsers.Inline.parsers.available
     }
 
-  parse: (block) =>
-    walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT)
-    for p in @parsers
-      walker.currentNode = walker.root
+  freeze: ->
+    @block.freeze()
+    @inline.freeze()
 
-      while walker.nextNode()
-        if match = p.rule.exec(walker.currentNode.textContent)
-          parser = new p.parser(match)
-          node = parser.render(walker.currentNode)
-          node.toHTMLString = parser.toHTMLString.bind(parser, node)
-
-
-  isLeafNode: (node) ->
-    if node.children.length == 0
-      return NodeFilter.FILTER_ACCEPT
-
+@Written.Parsers.default = ->
+  parsers = new Written.Parsers()
+  parsers.use('inline', 'all')
+  parsers.use('block', 'all')
+  parsers

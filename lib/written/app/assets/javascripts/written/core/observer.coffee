@@ -23,7 +23,11 @@ class Written.Observer
 
     @pause(callback)
 
+  resume: =>
+    @mutations.observe @element(), @settings()
+
   pause: (callback) =>
     @mutations.disconnect()
-    callback()
-    @mutations.observe @element(), @settings()
+    if callback?
+      callback()
+      @resume()

@@ -5,24 +5,30 @@ class @Written
     @element = ->
       return el
 
+    text = @toString()
+    @element().textContent = ''
+
     @observer = new Written.Observer(@element(), @changed)
-    @observer.pause @initialize
+    @initialize = @initialize.bind(this, text)
 
     @element().addEventListener('keypress', @linefeed)
     @element().addEventListener('keydown', @undo)
     @element().addEventListener('keydown', @redo)
 
 
-  initialize: =>
-    if @parsers?
-      return
+  initialize: (text, parsers) ->
+    @observer.pause()
+    if !parsers?
+      parsers = Written.Parsers.default()
+
+    @parsers = parsers
 
     if @element().contentEditable != 'true'
       @element().contentEditable = 'true'
 
-    Written.Parsers.freeze()
+    @parsers.freeze()
 
-    document = new Written.Document(@toString())
+    document = new Written.Document(text, @parsers)
     cursor = new Written.Cursor(@element(), window.getSelection())
     document.cursor = cursor
 
@@ -30,7 +36,6 @@ class @Written
     
     node = @history.current.head
 
-    @element().textContent = ''
 
     while node
       @element().appendChild(node.cloneNode(true))
@@ -38,6 +43,7 @@ class @Written
 
     document.cursor.focus(0, @element())
     @dispatch('written:initialized')
+    @observer.resume()
 
 
   dispatch: (name, data = {}) =>
@@ -46,7 +52,7 @@ class @Written
 
   changed: (e) =>
     oldDocument = @history.current
-    newDocument = new Written.Document(@toString())
+    newDocument = new Written.Document(@toString(), @parsers)
     newDocument.cursor = new Written.Cursor(@element(), window.getSelection())
     if @element().children.length > 0 && oldDocument.toString().localeCompare(newDocument.toString()) == 0
       return
@@ -104,7 +110,7 @@ class @Written
         lines.push('')
         cursor.offset += 1
 
-      document = new Written.Document(lines.join('\n'))
+      document = new Written.Document(lines.join('\n'), @parsers)
       document.cursor = cursor
       if cursor.offset < document.toString().length
         cursor.offset += 1

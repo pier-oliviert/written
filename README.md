@@ -16,16 +16,31 @@ The editor also allows you to cherry-pick the markdown feature you wish to suppo
 To start using Written, you just have to create a new editor.
 
 ```javascript
-  new Written(document.querySelector('#Editor'))
+var editor = new Written(document.querySelector('#Editor'))
+editor.initialize()
 ```
 
 You can retrieve the document either as a markdown text, or a HTML string. For storage purposes, you might want to store the HTML string from the current document
 
 ```javascript
-  var html = document.querySelector('#Editor').instance.history.current.toHTMLString()
-
-  var markdown = document.querySelector('#Editor').instance.history.current.toString()
+var html = document.querySelector('#Editor').instance.history.current.toHTMLString()
+var markdown = document.querySelector('#Editor').instance.history.current.toString()
 ```
+
+### Enable the parsers you need
+
+Written allows you to enable the parsers you wish. The parsers are split into two categories: Inline and Block parsers. If you don't specify any parser during the initialization, Written, will enable all the feature by default.
+
+The editor needs to be configured before it is initialized. Here's how you customize the parsers.
+
+```javascript
+var editor = new Written(document.querySelector('#Editor'))
+editor.parsers.use('block', ['Header', 'Code', 'UList', 'OList'])
+editor.parsers.use('inline', 'all')
+editor.initialize()
+```
+
+You can specify ```javascript 'all'``` if you wish to use all the available parsers for a given type.
 
 ### Document
 
@@ -33,7 +48,7 @@ Based on the document system described in [Trix](https://github.com/basecamp/tri
 
 This means that Written can render text from a document and also position the cursor at the right place.
 
-Those documents are then stored in a history that Written will then use to implement the undo/redo feature.
+Those documents are then stored in a history that Written then use to implement the undo/redo feature.
 
 ### On Change Events
 

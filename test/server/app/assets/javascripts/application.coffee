@@ -4,4 +4,5 @@
 Written.Parsers.Block.get('Code').parseSyntax = (element) ->
   Prism.highlightElement(element, false)
 
-new Written(document.getElementById('Editor'))
+editor = new Written(document.getElementById('Editor'))
+editor.initialize()
