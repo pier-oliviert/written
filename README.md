@@ -26,3 +26,11 @@ You can retrieve the document either as a markdown text, or a HTML string. For s
 
   var markdown = document.querySelector('#Editor').instance.history.current.toString()
 ```
+
+### Document
+
+Documents are the foundation of
+
+### On Change Events
+
+Written dispatch an event 

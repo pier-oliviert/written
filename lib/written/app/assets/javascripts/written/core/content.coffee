@@ -37,7 +37,12 @@ class @Written
       node = node.nextDocumentNode
 
     document.cursor.focus(0, @element())
+    @dispatch('written:initialized')
 
+
+  dispatch: (name, data = {}) =>
+    event = new CustomEvent(name, bubbles: true, detail: data)
+    @element().dispatchEvent(event)
 
   changed: (e) =>
     oldDocument = @history.current
@@ -48,6 +53,7 @@ class @Written
 
     @update(newDocument)
     @history.push(newDocument)
+    @dispatch('written:changed', document: newDocument)
 
   update: (document) =>
     node = document.head
