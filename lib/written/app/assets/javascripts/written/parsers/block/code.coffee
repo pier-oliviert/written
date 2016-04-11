@@ -23,7 +23,7 @@ class Code
     @node
 
   toHTMLString: (node) =>
-    code = node.toString().split('\n').slice(1, -1)
+    code = node.toString().split('\n').slice(1, -1).join('\n')
     "<pre><code class='#{node.querySelector('code').classList.toString().trim()}'>#{code}</code></pre>"
 
 Written.Parsers.Block.register Code, /((~{3})([a-z]+)?)(.+)?/i
