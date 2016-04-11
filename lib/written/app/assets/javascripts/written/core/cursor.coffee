@@ -61,8 +61,18 @@ class Written.Cursor
     if @offsetDiffersBetween(@selection, range)
       @selection.removeAllRanges()
       @selection.addRange(range)
+      if !@inViewport(node)
+        node.scrollIntoView()
 
   offsetDiffersBetween: (selection, range) ->
     selection.focusNode != range.startContainer ||
     selection.focusOffset != range.startOffset
+
+  inViewport: (node) ->
+    bounding = node.getBoundingClientRect()
+
+    bounding.top >= 0 &&
+    bounding.left >= 0 &&
+    bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
 
