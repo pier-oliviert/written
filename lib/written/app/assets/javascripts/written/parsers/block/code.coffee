@@ -26,4 +26,4 @@ class Code
     code = node.toString().split('\n').slice(1, -1).join('\n')
     "<pre><code class='#{node.querySelector('code').classList.toString().trim()}'>#{code}</code></pre>"
 
-Written.Parsers.Block.register Code, /((~{3})([a-z]+)?)(.+)?/i
+Written.Parsers.Block.register Code, /^((~{3})([a-z]+)?)(.+)?/i
