@@ -50,6 +50,9 @@ class @Written
     event = new CustomEvent(name, bubbles: true, detail: data)
     @element().dispatchEvent(event)
 
+  changeTo: (text) =>
+    @update(new Written.Document(text, @parsers))
+
   changed: (e) =>
     oldDocument = @history.current
     newDocument = new Written.Document(@toString(), @parsers)
