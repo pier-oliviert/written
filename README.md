@@ -15,17 +15,17 @@ The editor also allows you to cherry-pick the markdown feature you wish to suppo
 
 To start using Written, you just have to create a new editor.
 
-```javascript
+~~~javascript
 var editor = new Written(document.querySelector('#Editor'))
 editor.initialize()
-```
+~~~
 
 You can retrieve the document either as a markdown text, or a HTML string. For storage purposes, you might want to store the HTML string from the current document
 
-```javascript
+~~~javascript
 var html = document.querySelector('#Editor').instance.history.current.toHTMLString()
 var markdown = document.querySelector('#Editor').instance.history.current.toString()
-```
+~~~
 
 ### Enable the parsers you need
 
@@ -33,14 +33,14 @@ Written allows you to enable the parsers you wish. The parsers are split into tw
 
 The editor needs to be configured before it is initialized. Here's how you customize the parsers.
 
-```javascript
+~~~javascript
 var editor = new Written(document.querySelector('#Editor'))
 editor.parsers.use('block', ['Header', 'Code', 'UList', 'OList'])
 editor.parsers.use('inline', 'all')
 editor.initialize()
-```
+~~~
 
-You can specify ```javascript 'all'``` if you wish to use all the available parsers for a given type.
+You can specify ~~~ 'all'~~~ if you wish to use all the available parsers for a given type.
 
 ### Document
 
@@ -52,12 +52,12 @@ Those documents are then stored in a history that Written then use to implement 
 
 ### On Change Events
 
-Written dispatch an event whenever text changes on the Editor. To receive update when the editor change, just add an event listener to ```written:changed``` event.
+Written dispatch an event whenever text changes on the Editor. To receive update when the editor change, just add an event listener to ~~~written:changed~~~ event.
 
-```javascript
+~~~javascript
   document.addEventListener('written:changed', function(event) {
     let document = event.detail.document
     document.toHTMLString() // HTML version
     document.toString() // Markdown version
   })
-```
+~~~
