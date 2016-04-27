@@ -1,17 +1,19 @@
 class Strong
   constructor: (match) ->
     @match = match
-    @node = "<strong>".toHTML()
 
-  render: (textNode) =>
-    strong = textNode.splitText(textNode.textContent.indexOf(@match[0]))
-    strong.splitText(@match[0].length)
-    @node.appendChild(document.createTextNode(@match[0]))
-    textNode.parentElement.replaceChild(@node, strong)
+  index: =>
+    @match.index
 
-    @node
+  length: =>
+    @match[0].length
 
-  toHTMLString: (node) ->
-    "<strong>#{node.toString().slice(2,-2)}</strong>"
+  markdown: =>
+    "<strong>#{@match[0]}</strong>".toHTML()
 
-Written.Parsers.Inline.register Strong, /((\*{2})[^\*]+(\*{2}))/gi
+  html: =>
+    "<strong>#{@match[3]}</strong>".toHTML()
+
+Strong.rule = /((\*{2})([^\*]+)(\*{2}))/gi
+
+Written.Parsers.Inline.register Strong

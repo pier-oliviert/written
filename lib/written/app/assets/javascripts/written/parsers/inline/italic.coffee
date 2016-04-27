@@ -1,19 +1,20 @@
 class Italic
   constructor: (match) ->
     @match = match
-    @node = "<em>".toHTML()
-    @node.toHTMLString = @toHTMLString.bind(@node)
 
-  render: (textNode) =>
-    italic = textNode.splitText(textNode.textContent.indexOf(@match[2]))
-    italic.splitText(@match[2].length)
-    @node.appendChild(document.createTextNode(@match[2]))
-    textNode.parentElement.replaceChild(@node, italic)
+  index: =>
+    @match.index + 1
 
-    @node
+  length: =>
+    @match[2].length
 
-  toHTMLString: (node) ->
-    "<em>#{node.toString().slice(1,-1)}</em>"
+  markdown: =>
+    "<em>#{this.match[2]}</em>".toHTML()
 
-Written.Parsers.Inline.register Italic, /(\s|^|\d)(\*{1}([^\*]+)\*{1})/gi
+  html: ->
+    "<em>#{this.match[3]}</em>".toHTML()
+
+Italic.rule = /([^*]|^)(\*{1}([^\*]+)\*{1})/gi
+
+Written.Parsers.Inline.register Italic
 

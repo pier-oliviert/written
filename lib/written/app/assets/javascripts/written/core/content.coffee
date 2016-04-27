@@ -11,10 +11,16 @@ class @Written
     @observer = new Written.Observer(@element(), @changed)
     @initialize = @initialize.bind(this, text)
 
+    @element().addEventListener 'dragover', @over
+    @element().addEventListener('drop', @preventDefaults)
+
     @element().addEventListener('keypress', @linefeed)
     @element().addEventListener('keydown', @undo)
     @element().addEventListener('keydown', @redo)
 
+
+  preventDefaults: (e) ->
+    e.preventDefault()
 
   initialize: (text, parsers) ->
     @observer.pause()
@@ -32,16 +38,12 @@ class @Written
     cursor = new Written.Cursor(@element(), window.getSelection())
     document.cursor = cursor
 
-    @history = new Written.History(document)
     
-    node = @history.current.head
+    @update(document)
+    document.cursor.focus(document.toString().length)
 
+    @history = new Written.History(document)
 
-    while node
-      @element().appendChild(node.cloneNode(true))
-      node = node.nextDocumentNode
-
-    document.cursor.focus(0, @element())
     @dispatch('written:initialized')
     @observer.resume()
 
@@ -65,30 +67,27 @@ class @Written
     @dispatch('written:changed', document: newDocument)
 
   update: (document) =>
-    node = document.head
-    cursor = document.cursor
-    current = @element().firstElementChild
+    elements = Array.prototype.slice.call(@element().children)
 
-    while node
-      if !current?
-        @element().appendChild(node.cloneNode(true))
-      else if node.outerHTML.localeCompare(current.outerHTML) != 0
-        clonedNodeDocument = node.cloneNode(true)
-        @element().replaceChild(clonedNodeDocument, current)
-        current = clonedNodeDocument
+    for block, index in document.blocks
+      node = block.markdown()
+      element = elements[index]
 
-      node = node.nextDocumentNode
-      if current?
-        current = current.nextElementSibling
+      if element?
+        if !block.identical(element, node)
+          @element().replaceChild(node, element)
+          if block.configure?
+            block.configure(node, @observer)
+      else
+        @element().appendChild(node)
+        if block.configure?
+          block.configure(node, @observer)
 
-    if current?
-      node = current
-      while node
-        nextNode = node.nextElementSibling
-        node.remove()
-        node = nextNode
+    if elements.length > index
+      for i in [index..elements.length - 1]
+        elements[i].remove()
 
-    cursor.focus()
+    document.cursor.focus()
 
 
   linefeed: (e) =>
@@ -153,3 +152,4 @@ class @Written
     texts.join '\n'
 
 
+Written.Uploaders = {}

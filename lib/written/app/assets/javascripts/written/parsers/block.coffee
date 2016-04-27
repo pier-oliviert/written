@@ -29,43 +29,24 @@ class @Written.Parsers.Block
     return this
 
   parse: (lines) =>
-    elements = []
-    currentNode = undefined
+    blocks = []
     while (line = lines.pop()) != undefined
       str = line.toString()
-      if !currentNode
-        parser = @find(str)
-        currentNode = parser.render(str)
-        currentNode.toHTMLString = parser.toHTMLString.bind(parser, currentNode)
-        elements.push(currentNode)
+      block = blocks[blocks.length - 1]
+
+      if block? && block.multiline && block.accepts(line)
+        block.append(line)
         continue
 
-      if currentNode.dataset.status != 'opened'
-        parser = @find(str)
-        currentNode.nextDocumentNode = parser.render(str)
-        currentNode = currentNode.nextDocumentNode
-        currentNode.writtenNodeParser = parser
-        currentNode.toHTMLString = parser.toHTMLString.bind(parser, currentNode)
-        elements.push(currentNode)
-        continue
-      else if currentNode.writtenNodeParser.valid(str)
-        currentNode.writtenNodeParser.render(str)
-        continue
-      else
-        parser = @find(str)
-        currentNode.nextDocumentNode = parser.render(str)
-        currentNode = currentNode.nextDocumentNode
-        currentNode.writtenNodeParser = parser
-        currentNode.toHTMLString = parser.toHTMLString.bind(parser, currentNode)
-        elements.push(currentNode)
+      blocks.push(@find(str))
 
-    elements[0]
+    blocks
 
   find: (str) ->
     parser = undefined
     for p in @parsers
       if match = p.rule.exec(str)
-        parser = new p.parser(match)
+        parser = new p(match)
         break
 
     return parser
@@ -77,21 +58,12 @@ class @Written.Parsers.Block
 }
 
 @Written.Parsers.Block.get = (name) ->
-  parser = Written.Parsers.Block.parsers.available.find (p) ->
-    p.parser.name.localeCompare(name) == 0
+  Written.Parsers.Block.parsers.available.find (p) ->
+    p.name.localeCompare(name) == 0
 
-  if parser?
-    parser.parser
-
-@Written.Parsers.Block.register = (parser, rule, defaultParser = false) ->
+@Written.Parsers.Block.register = (parser, defaultParser = false) ->
   if defaultParser
-    Written.Parsers.Block.parsers.default = {
-      rule: rule,
-      parser: parser
-    }
+    Written.Parsers.Block.parsers.default = parser
   else
-    Written.Parsers.Block.parsers.available.push {
-      rule: rule,
-      parser: parser
-    }
+    Written.Parsers.Block.parsers.available.push parser
 

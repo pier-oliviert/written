@@ -1,30 +1,25 @@
 #= require ../parsers/parsers
 
-Written.Document = class
+class Written.Document
   constructor: (textContent, parsers) ->
-    @texts = new Array()
+    @markdown = textContent
 
-    @head = parsers.block.parse(textContent.split('\n').reverse())
+    @blocks = parsers.block.parse(textContent.split('\n').reverse())
 
-    node = @head
+    @blocks.forEach (block) =>
+      block.processContent(parsers.inline.parse.bind(parsers.inline))
 
-    while node
-      parsers.inline.parse(node)
-      text = node.toString()
-      @texts.push(text)
-      node = node.nextDocumentNode
-
-
+  freeze: =>
+    Object.freeze(@blocks)
+    Object.freeze(@cursor)
 
   toHTMLString: =>
     text = ''
-    node = @head
 
-    while node
-      text += node.toHTMLString()
-      node = node.nextDocumentNode
+    @blocks.forEach (node) ->
+      text += node.html().outerHTML + "\n"
 
     text
 
   toString: =>
-    @texts.join('\n')
+    @markdown

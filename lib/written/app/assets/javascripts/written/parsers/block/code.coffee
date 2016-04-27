@@ -1,29 +1,59 @@
 class Code
+  multiline: true
+
   constructor: (match) ->
-    @match = match
-    @node = "<pre data-status='opened' data-multiline='true'><code></code></pre>".toHTML()
+    @matches = [match]
+    @content = "\n"
+    @opened = true
 
 
-  valid: ->
-    true
+  accepts: (text) ->
+    @opened
 
-  render: (text) =>
-    if @match[3]?
-      @node.querySelector('code').classList.add("language-#{@match[3]}")
+  append: (text) ->
+    match = /(~{3})$/i.exec(text)
+    if match?
+      @matches.push(match)
+      @opened = false
+    else
+      @content += text + "\n"
 
-    code = @node.querySelector('code')
-    code.appendChild(document.createTextNode(text + "\n"))
+    @content
 
-    if /(~{3})$/i.test(text)
-      @node.dataset.status = 'closed'
+  processContent: (callback) =>
 
-    if Code.parseSyntax?
-      Code.parseSyntax(code)
+  identical: (current, rendered) ->
+    current.outerHTML == rendered.outerHTML
 
-    @node
+  markdown: =>
+    node = "<pre><code></code></pre>".toHTML()
+    code = node.querySelector('code')
 
-  toHTMLString: (node) =>
-    code = node.toString().split('\n').slice(1, -1).join('\n')
-    "<pre><code class='#{node.querySelector('code').classList.toString().trim()}'>#{code}</code></pre>"
+    if @matches[0][3]?
+      code.classList.add("language-#{@matches[0][3]}")
 
-Written.Parsers.Block.register Code, /^((~{3})([a-z]+)?)(.+)?/i
+    code.appendChild(document.createTextNode(@content))
+
+    code.insertAdjacentHTML('afterbegin', @matches[0][0])
+    if !@opened
+      code.insertAdjacentHTML('beforeend', @matches[1][0])
+
+    node
+
+  html: =>
+    node = "<pre><code></code></pre>".toHTML()
+    code = node.querySelector('code')
+
+    if @matches[0][3]?
+      code.classList.add("language-#{@matches[0][3]}")
+
+    if @matches[0][4]?
+      code.insertAdjacentHTML('beforebegin', "<header>#{@matches[0][4]}</header>")
+
+    code.appendChild(document.createTextNode(@content))
+
+    node
+
+Code.rule = /^((~{3})([a-z]+)?)(?:\s(.*))?/i
+
+Written.Parsers.Block.register Code

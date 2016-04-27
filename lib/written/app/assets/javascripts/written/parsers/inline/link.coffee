@@ -1,21 +1,19 @@
 class Link
   constructor: (match) ->
     @match = match
-    @node = "<a>".toHTML()
 
-  render: (textNode) =>
-    @node.href = @match[4]
-    name = "<strong>".toHTML()
-    anchor = textNode.splitText(textNode.textContent.indexOf(@match[0]))
-    anchor.splitText(@match[0].length)
-    name.textContent = @match[1]
-    @node.appendChild(name)
-    @node.appendChild(document.createTextNode(@match[3]))
-    textNode.parentElement.replaceChild(@node, anchor)
+  index: =>
+    @match.index 
 
-    @node
+  length: =>
+    @match[0].length
 
-  toHTMLString: (node) ->
-    "<a href='#{node.href}'>#{this.match[2]}</a>"
+  markdown: =>
+    "<a href='javascript:void(0)'><strong>#{@match[1]}</strong>#{@match[3]}</a>".toHTML()
 
-Written.Parsers.Inline.register Link, /!{0}(\[([^\]]+)\])(\(([^\)]+)\))/gi
+  html: =>
+    "<a href='#{@match[4]}'>#{@match[2]}</a>".toHTML()
+
+Link.rule = /!{0}(\[([^\]]+)\])(\(([^\)]+)\))/gi
+
+Written.Parsers.Inline.register Link

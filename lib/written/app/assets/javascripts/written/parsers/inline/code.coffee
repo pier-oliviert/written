@@ -1,25 +1,29 @@
 class Code
   constructor: (match) ->
     @match = match
-    @node = "<code></code>".toHTML()
 
-  render: (text) =>
+  index: =>
+    @match.index
+
+  length: =>
+    @match[0].length
+
+  markdown: =>
+    node = "<code>#{this.match[0]}</code>".toHTML()
     if @match[3]?
-      @node.classList.add("language-#{@match[3]}")
+      node.classList.add("language-#{@match[3]}")
 
-    code = text.splitText(text.textContent.indexOf(@match[0]))
-    code.splitText(@match[0].length)
-    @node.appendChild(document.createTextNode(@match[0]))
-    text.parentElement.replaceChild(@node, code)
+    node
 
-    if Code.parseSyntax?
-      Code.parseSyntax(@node)
+  html: =>
+    node = "<code>#{this.match[4]}</code>".toHTML()
+    if @match[3]?
+      node.classList.add("language-#{@match[3]}")
 
-    @node
+    node
 
-  toHTMLString: (node) =>
-    code = node.toString().split('\n').slice(1, -1).join('\n')
-    "<code class='#{node.classList.toString().trim()}'>#{code}</code>"
 
-Written.Parsers.Inline.register Code, /((~{3})([a-z]+)?)\s(.+)?(~{3})/gi
+Code.rule = /((~{3})([a-z]+)?)\s(.+)?(~{3})/gi
+
+Written.Parsers.Inline.register Code
 

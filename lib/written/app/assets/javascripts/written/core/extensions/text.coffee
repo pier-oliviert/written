@@ -1,0 +1,2 @@
+Text::toString = ->
+  @textContent

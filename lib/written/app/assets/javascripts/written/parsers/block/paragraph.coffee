@@ -1,22 +1,41 @@
 class Paragraph
+  multiline: false
+
   constructor: (match) ->
     @match = match
-    @node = "<p>".toHTML()
 
-  render: (str) =>
-    @node.textContent = str
-    @node
+  processContent: (callback) =>
+    if @content?
+      throw "Content Error: The content was already processed"
+      return
 
-  toHTMLString: (node) ->
-    text = ''
-    child = node.firstChild
-    while child
-      if child.toHTMLString
-        text += child.toHTMLString()
+    @content = callback(@match[0])
+
+  identical: (current, rendered) ->
+    current.outerHTML == rendered.outerHTML
+
+  markdown: =>
+    node = "<p>".toHTML()
+    for text in @content
+      if text.markdown?
+        node.appendChild(text.markdown())
       else
-        text += child.toString()
-      child = child.nextSibling
+        node.appendChild(document.createTextNode(text))
 
-    "<p>#{text}</p>"
+    node
 
-Written.Parsers.Block.register Paragraph, /.*/i, true
+  html: =>
+    node = "<p>".toHTML()
+    for text in @content
+      if text.html?
+        node.appendChild(text.html())
+      else
+        node.appendChild(document.createTextNode(text))
+
+    node
+
+
+
+Paragraph.rule = /.*/i
+
+Written.Parsers.Block.register Paragraph, true
