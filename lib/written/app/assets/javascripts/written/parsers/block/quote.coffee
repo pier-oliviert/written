@@ -42,6 +42,24 @@ class Quote
 
     node
 
+  html: =>
+    node = "<blockquote></blockquote>".toHTML()
+    for line, index in @content
+      p = "<p>".toHTML()
+
+      for text in line
+        if text.html?
+          p.appendChild(text.html())
+        else
+          p.appendChild(document.createTextNode(text.toString()))
+
+      if index < @content.length - 1
+        p.insertAdjacentHTML('beforeend', '\n')
+      node.appendChild(p)
+
+    node
+
+
 Quote.rule = /^(>\s)(.*)/i
 
 Written.Parsers.Block.register Quote
