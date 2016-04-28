@@ -12,19 +12,21 @@ class Image
     @content = callback(@match[2])
 
   identical: (current, rendered) ->
-    captions = [
-      current.querySelector('figcaption'),
-      rendered.querySelector('figcaption')
-    ]
 
-    container = [
-      current.querySelector('div[contenteditable="false'),
-      rendered.querySelector('div[contenteditable="false')
-    ]
+    sameNode = (current, rendered) ->
+      current.nodeName == rendered.nodeName
 
-    current.nodeName == rendered.nodeName &&
-    container[0]? && container[1]? &&
-    captions[0]? && captions[1]?
+    sameImages = (current, rendered) ->
+      (current? && current.dataset.image) == (rendered? && rendered.dataset.image)
+
+    sameTexts = (current, rendered) ->
+      (current? && current.textContent) == (rendered? && rendered.textContent)
+
+
+    sameNode(current, rendered) &&
+    sameImages(current.querySelector('img'), rendered.querySelector('img')) &&
+    sameTexts(current.querySelector('figcaption'), rendered.querySelector('figcaption'))
+
 
   markdown: =>
     figure = "<figure><div contenteditable='false'><div class='progress'></div><input type='file' /><img/></div><figcaption /></figure>".toHTML()
@@ -42,7 +44,11 @@ class Image
     caption.insertAdjacentHTML('beforeend', @match[3])
 
     img = figure.querySelector('img')
-    img.src = @match[4]
+    if @match[4]?
+      img.src = img.dataset.image = @match[4]
+      img.onerror = @placeholder.bind(this, img, true)
+    else
+      img.src = '/assets/written/placeholder.png'
 
     if @configure?
       container.dataset.uploadable = true
@@ -65,6 +71,12 @@ class Image
         caption.appendChild(document.createTextNode(text))
 
     figure
+
+  placeholder: (img, event, onerror = false) =>
+    img.src = '/assets/written/placeholder.png'
+    img.onerror = undefined
+    if onerror
+      img.classList.add 'error'
 
 Image.rule = /^(!{1}\[([^\]]+)\])(\(([^\s]*)?\))$/i
 
