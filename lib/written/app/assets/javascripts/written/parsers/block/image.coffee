@@ -78,7 +78,7 @@ class Image
     if onerror
       img.classList.add 'error'
 
-Image.rule = /^(!{1}\[([^\]]+)\])(\(([^\s]*)?\))$/i
+Image.rule = /^(!{1}\[([^\]]*)\])(\(([^\s]*)?\))$/i
 
 Image.uploader = (uploader) ->
   Image::configure = uploader.initialize
