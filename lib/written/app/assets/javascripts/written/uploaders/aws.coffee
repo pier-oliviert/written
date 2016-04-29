@@ -4,15 +4,15 @@ class Written.Uploaders.AWS
 
   initialize: (node, observer) =>
     img = node.querySelector('img')
+    container = node.querySelector('div')
 
     node.dataset.uploadable = true
-    node.addEventListener 'click', @open.bind(this, node), true
     node.addEventListener 'written:uploader:error', @error, true
     node.addEventListener 'written:uploader:uploading', @progress, true
     node.addEventListener 'written:uploader:completed', @uploaded, true
-
     node.addEventListener 'change', @input.bind(this, node, observer), true
 
+    container.addEventListener 'click', @open.bind(this, node), true
     image = Images.get(img.dataset.image)
     if image
       image.node = node
