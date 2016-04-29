@@ -33,6 +33,8 @@ class Code
       code.classList.add("language-#{@matches[0][3]}")
 
     code.appendChild(document.createTextNode(@content))
+    if @highlight?
+      @highlight(code)
 
     code.insertAdjacentHTML('afterbegin', @matches[0][0])
     if !@opened

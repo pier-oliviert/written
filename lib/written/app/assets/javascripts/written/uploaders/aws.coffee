@@ -3,11 +3,22 @@ class Written.Uploaders.AWS
     Images.settings = settings
 
   initialize: (node, observer) =>
+    img = node.querySelector('img')
+
+    node.dataset.uploadable = true
+    node.addEventListener 'click', @open.bind(this, node), true
     node.addEventListener 'written:uploader:error', @error, true
     node.addEventListener 'written:uploader:uploading', @progress, true
     node.addEventListener 'written:uploader:completed', @uploaded, true
 
     node.addEventListener 'change', @input.bind(this, node, observer), true
+
+    image = Images.get(img.dataset.image)
+    if image
+      image.node = node
+
+  open: (node, e) =>
+    node.querySelector('input')?.click()
 
   uploaded: (e) =>
     caption = e.target.querySelector('figcaption')

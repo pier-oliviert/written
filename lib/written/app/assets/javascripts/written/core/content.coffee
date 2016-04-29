@@ -76,12 +76,8 @@ class @Written
       if element?
         if !block.identical(element, node)
           @element().replaceChild(node, element)
-          if block.configure?
-            block.configure(node, @observer)
       else
         @element().appendChild(node)
-        if block.configure?
-          block.configure(node, @observer)
 
     if elements.length > index
       for i in [index..elements.length - 1]

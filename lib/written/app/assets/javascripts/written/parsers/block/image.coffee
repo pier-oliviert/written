@@ -51,9 +51,7 @@ class Image
       img.src = '/assets/written/placeholder.png'
 
     if @configure?
-      container.dataset.uploadable = true
-      container.addEventListener 'click', (e) ->
-        figure.querySelector('input').click()
+      @configure(figure)
 
     figure
 

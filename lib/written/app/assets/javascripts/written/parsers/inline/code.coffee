@@ -13,6 +13,8 @@ class Code
     if @match[3]?
       node.classList.add("language-#{@match[3]}")
 
+    if @highlight?
+      @highlight(node)
     node
 
   html: =>
