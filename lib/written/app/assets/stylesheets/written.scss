@@ -13,21 +13,59 @@
     list-style-type: none;
   }
 
-  figure {
-    background: rgba(230,230,230,1);
+  blockquote {
+    background: #eee;
+    border-radius: 2px;
+    padding: 0.5em 1em;
 
-    & > div {
-      display: flex;
-      min-height: 200px;
-      padding: 4px;
-    }
-
-    img {
-      margin: auto;
-    }
-
-    figcaption {
-      padding: 4px;
+    p {
+      margin: 0;
+      font-style: italic;
     }
   }
+}
+
+[data-editor="written"] figure > div {
+  position: relative;
+  display: flex;
+  padding: 4px;
+
+  &[data-uploadable] {
+    cursor: pointer;
+  }
+}
+
+[data-editor="written"] figure > div > div.progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: width 0.24s ease;
+}
+
+[data-editor="written"] figure[data-status='uploading'] div.progress {
+  background-color: green;
+  height: 1px;
+}
+
+[data-editor="written"] figure img {
+  border: 2px solid #eee;
+  min-height: 100px;
+  min-width: 100px;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+
+  &.error {
+    border-color: #F32626
+  }
+}
+
+[data-editor="written"] figure figcaption {
+  text-align: center;
+  font-size: 0.8em;
+  padding: 4px;
+}
+
+[data-editor="written"] figure input[type='file'] {
+  display: none;
 }

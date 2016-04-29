@@ -1,5 +1,6 @@
 Written.History = class History
   constructor: (document) ->
+    document.freeze()
     @current = document
 
   push: (document) =>
@@ -8,6 +9,7 @@ Written.History = class History
     previousDocument.nextDocument = document
     document.previousDocument = previousDocument
 
+    document.freeze()
     @limit()
 
   previous: =>

@@ -1,23 +1,39 @@
 class Header
+  multiline: false
+
   constructor: (match) ->
     @match = match
 
-  render: (text) =>
-    size = @match[1].length
-    return "<h#{size}>#{text}</h#{size}>".toHTML()
-    
-  toHTMLString: (node) =>
-    size = @match[1].length
-    text = ''
-    child = node.firstChild
-    while child
-      if child.toHTMLString
-        text += child.toHTMLString()
+  processContent: (callback) =>
+    if @content?
+      throw "Content Error: The content was already processed"
+      return
+
+    @content = callback(@match[3])
+
+  identical: (current, rendered) ->
+    current.outerHTML == rendered.outerHTML
+
+  markdown: =>
+    node = "<h#{@match[2].length}>".toHTML()
+    for text in @content
+      if text.markdown?
+        node.appendChild(text.markdown())
       else
-        text += child.toString()
-      child = child.nextSibling
+        node.appendChild(document.createTextNode(text))
 
+    node.insertAdjacentHTML('afterbegin', @match[1])
+    node
 
-    "<h#{size}>#{text.slice(this.match[0].length)}</h#{size}>"
+  html: =>
+    node = "<h#{@match[2].length}>".toHTML()
+    for text in @content
+      if text.html?
+        node.appendChild(text.html())
+      else
+        node.appendChild(document.createTextNode(text))
+    node
 
-Written.Parsers.Block.register Header, /^(#{1,6}) /i
+Header.rule = /^((#{1,6})\s)(.*)$/i
+
+Written.Parsers.Block.register Header

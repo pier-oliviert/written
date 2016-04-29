@@ -47,6 +47,8 @@ class Written.Cursor
   focus: (offset, node) =>
     if offset is undefined
       offset = @offset
+    else
+      @offset = offset
 
     if node is undefined
       node = @element().firstElementChild

@@ -1,45 +1,64 @@
 class OList
-  rule: /^(\d\.\s)(.*)/i
+  multiline: true
+
   constructor: (match) ->
-    @match = match
-    @node = "<ol data-status='opened'></ol>".toHTML()
+    @matches = [match]
+    @opened = true
 
-  valid: (text) ->
-    valid = OList::rule.test(text)
-    if !valid
-      @node.dataset.status = false
-    valid
+  accepts: (text) ->
+    @opened = OList.rule.test(text)
 
-  render: (text) =>
-    li = "<li>#{text}</li>".toHTML()
+    @opened
 
-    li.toHTMLString = (node) ->
-      text = ''
-      child = node.firstChild
-      while child
-        if child.toHTMLString?
-          text += child.toHTMLString()
+  append: (text) ->
+    @matches.push(OList.rule.exec(text))
+
+  processContent: (callback) =>
+    if @content?
+      throw "Content Error: The content was already processed"
+      return
+
+    lines = @matches.map (match) ->
+      match[2]
+    
+    @content = callback(lines)
+
+  identical: (current, rendered) ->
+    current.outerHTML == rendered.outerHTML
+
+  markdown: =>
+    node = "<ol></ol>".toHTML()
+    for line, index in @content
+      li = "<li>".toHTML()
+      li.appendChild(document.createTextNode(@matches[index][1]))
+
+      for text in line
+        if text.markdown?
+          li.appendChild(text.markdown())
         else
-          text += child.toString()
+          li.appendChild(document.createTextNode(text.toString()))
 
-        child = child.nextSibling
+      node.appendChild(li)
 
-      "<li>#{text.replace(/^\d+\.\s/i, '')}</li>"
+    node
 
-    @node.appendChild(li)
-    @node
+  html: =>
+    node = "<ol></ol>".toHTML()
+    for line, index in @content
+      li = "<li>".toHTML()
 
-  toHTMLString: (node) ->
-    child = node.firstChild
-    text = ''
-    while child
-      if child.toHTMLString?
-        text += child.toHTMLString(child)
-      else
-        text += child.toString()
-      child = child.nextSibling
+      for text in line
+        if text.html?
+          li.appendChild(text.html())
+        else
+          li.appendChild(document.createTextNode(text.toString()))
 
-    "<ol>#{text}</ol>"
+      node.appendChild(li)
 
-Written.Parsers.Block.register OList, OList::rule
+    node
+
+
+OList.rule = /^(\d\.\s)(.*)/i
+
+Written.Parsers.Block.register OList
 

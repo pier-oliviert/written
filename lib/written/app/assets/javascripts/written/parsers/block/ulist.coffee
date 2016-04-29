@@ -1,43 +1,61 @@
 class UList
-  rule: /^(-\s)(.*)/i
+  multiline: true
+
   constructor: (match) ->
-    @match = match
-    @node = "<ul data-status='opened'></ul>".toHTML()
+    @matches = [match]
 
-  valid: (text) ->
-    valid = UList::rule.test(text)
-    if !valid
-      @node.dataset.status = false
-    valid
+  accepts: (text) ->
+    @opened = UList.rule.test(text)
 
-  render: (text) =>
-    li = "<li>#{text}</li>".toHTML()
-    li.toHTMLString = (node) ->
-      text = ''
-      child = node.firstChild
-      while child
-        if child.toHTMLString?
-          text += child.toHTMLString()
+    @opened
+
+  append: (text) ->
+    @matches.push(UList.rule.exec(text))
+
+  processContent: (callback) =>
+    if @content?
+      throw "Content Error: The content was already processed"
+      return
+
+    lines = @matches.map (match) ->
+      match[2]
+    
+    @content = callback(lines)
+
+  identical: (current, rendered) ->
+    current.outerHTML == rendered.outerHTML
+
+  markdown: =>
+    node = "<ul></ul>".toHTML()
+    for line, index in @content
+      li = "<li>".toHTML()
+      li.appendChild(document.createTextNode(@matches[index][1]))
+
+      for text in line
+        if text.markdown?
+          li.appendChild(text.markdown())
         else
-          text += child.toString()
+          li.appendChild(document.createTextNode(text.toString()))
 
-        child = child.nextSibling
+      node.appendChild(li)
 
-      "<li>#{text.replace(/^-\s/i, '')}</li>"
+    node
 
-    @node.appendChild(li)
-    @node
+  html: =>
+    node = "<ul></ul>".toHTML()
+    for line, index in @content
+      li = "<li>".toHTML()
 
-  toHTMLString: (node) ->
-    child = node.firstChild
-    text = ''
-    while child
-      if child.toHTMLString?
-        text += child.toHTMLString(child)
-      else
-        text += child.toString()
-      child = child.nextSibling
+      for text in line
+        if text.html?
+          li.appendChild(text.html())
+        else
+          li.appendChild(document.createTextNode(text.toString()))
 
-    "<ul>#{text}</ul>"
+      node.appendChild(li)
 
-Written.Parsers.Block.register UList, UList::rule
+    node
+
+UList.rule = /^(-\s)(.*)/i
+
+Written.Parsers.Block.register UList

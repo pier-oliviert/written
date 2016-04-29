@@ -15,8 +15,8 @@ class @Written.Parsers.Inline
       names = names.split(',').map (name) ->
         name.trim()
 
-    parser = Written.Parsers.Inline.parsers.available.find (obj) ->
-      names.contains(obj.parser.name)
+    parser = Written.Parsers.Inline.parsers.available.find (parser) ->
+      names.contains(parser.name)
 
     if !parser?
       throw "Couldn't find parser #{name}."
@@ -25,37 +25,57 @@ class @Written.Parsers.Inline
     @parsers.push parser
     return this
 
-  parse: (block) =>
-    walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT)
+  parse: (text) =>
+    if Array.isArray(text)
+      return text.map(@parse)
+
+    parsers = []
     for p in @parsers
-      walker.currentNode = walker.root
+      if text.length is 0
+        break
 
-      while walker.nextNode()
-        if match = p.rule.exec(walker.currentNode.textContent)
-          parser = new p.parser(match)
-          node = parser.render(walker.currentNode)
-          node.toHTMLString = parser.toHTMLString.bind(parser, node)
+      p.rule.lastIndex = 0
+
+      while match = p.rule.exec(text)
+        parser = new p(match)
+        parsers[parser.index()] = parser
+
+    @merge(parsers, text)
 
 
-  isLeafNode: (node) ->
-    if node.children.length == 0
-      return NodeFilter.FILTER_ACCEPT
+  merge: (parsers, text) ->
+    content = []
+    buffer = ''
+    index = 0
+
+    while text[index]?
+      if parser = parsers[index]
+        content.push buffer.slice(0)
+        content.push parser
+        buffer = ''
+        index += parser.length()
+      else
+        buffer += text[index]
+        index += 1
+
+    if buffer.length > 0
+      content.push buffer
+
+    content
+
+  splice: (text, parser) ->
+    start = parser.index()
+    end = start + parser.length()
+    text.slice(0, start) + text.slice(end, text.length)
 
 
 @Written.Parsers.Inline.get = (name) ->
-  parser = Written.Parsers.Inline.parsers.available.find (p) ->
-    p.parser.name.localeCompare(name) == 0
-
-  if parser?
-    parser.parser
+  Written.Parsers.Inline.parsers.available.find (p) ->
+    p.name.localeCompare(name) == 0
 
 @Written.Parsers.Inline.parsers = {
   available: []
 }
 
-@Written.Parsers.Inline.register = (parser, rule) ->
-  Written.Parsers.Inline.parsers.available.push {
-    rule: rule,
-    parser: parser
-  }
-
+@Written.Parsers.Inline.register = (parser) ->
+  Written.Parsers.Inline.parsers.available.push(parser)
