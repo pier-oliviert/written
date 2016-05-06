@@ -14,6 +14,6 @@ class Strong
   html: =>
     "<strong>#{@match[3]}</strong>".toHTML()
 
-Strong.rule = /((\*{2})([^\*]+)(\*{2}))/gi
+Strong.rule = /((\*{1})([^\*]+)(\*{1}))/gi
 
 Written.Parsers.Inline.register Strong

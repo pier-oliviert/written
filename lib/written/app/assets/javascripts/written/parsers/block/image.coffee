@@ -20,7 +20,7 @@ class Image
       (current? && current.dataset.image) == (rendered? && rendered.dataset.image)
 
     sameTexts = (current, rendered) ->
-      (current? && current.textContent) == (rendered? && rendered.textContent)
+      (current? && current.innerHTML) == (rendered? && rendered.innerHTML)
 
 
     sameNode(current, rendered) &&
