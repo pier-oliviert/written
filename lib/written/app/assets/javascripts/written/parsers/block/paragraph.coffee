@@ -15,7 +15,7 @@ class Paragraph
     current.outerHTML == rendered.outerHTML
 
   markdown: =>
-    node = "<p>".toHTML()
+    node = "<p is='written-p'>".toHTML()
     for text in @content
       if text.markdown?
         node.appendChild(text.markdown())
@@ -39,3 +39,30 @@ class Paragraph
 Paragraph.rule = /.*/i
 
 Written.Parsers.Block.register Paragraph, true
+
+prototype = Object.create(HTMLParagraphElement.prototype)
+
+prototype.getRange = (offset, walker) ->
+  range = document.createRange()
+
+  if !@firstChild?
+    range.setStart(this, 0)
+  else
+    while walker.nextNode()
+      if walker.currentNode.length < offset
+        offset -= walker.currentNode.length
+        continue
+
+      range.setStart(walker.currentNode, offset)
+      break
+
+  range.collapse(true)
+  range
+
+prototype.toString = ->
+  @textContent
+
+document.registerElement('written-p', {
+  prototype: prototype
+  extends: 'p'
+})

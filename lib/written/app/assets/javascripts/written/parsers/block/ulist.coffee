@@ -26,9 +26,9 @@ class UList
     current.outerHTML == rendered.outerHTML
 
   markdown: =>
-    node = "<ul></ul>".toHTML()
+    node = "<ul is='written-ul'></ul>".toHTML()
     for line, index in @content
-      li = "<li>".toHTML()
+      li = "<li is='written-li'>".toHTML()
       li.appendChild(document.createTextNode(@matches[index][1]))
 
       for text in line
@@ -59,3 +59,40 @@ class UList
 UList.rule = /^(-\s)(.*)/i
 
 Written.Parsers.Block.register UList
+
+prototype = Object.create(HTMLUListElement.prototype)
+
+prototype.toString = ->
+  texts = Array.prototype.slice.call(@children).map (li) ->
+    li.toString()
+  texts.join("\n")
+
+prototype.getRange = (offset, walker) ->
+  range = document.createRange()
+  if !@firstChild?
+    range.setStart(this, 0)
+    return
+
+  li = this.firstElementChild
+
+  while walker.nextNode()
+    if !li.contains(walker.currentNode)
+      newList = walker.currentNode
+      while newList? && !(newList instanceof HTMLLIElement)
+        newList = newList.parentElement
+      li = newList
+      offset--
+
+    if walker.currentNode.length < offset
+      offset -= walker.currentNode.length
+      continue
+    range.setStart(walker.currentNode, offset)
+    break
+
+  range.collapse(true)
+  range
+
+document.registerElement('written-ul', {
+  prototype: prototype
+  extends: 'ul'
+})

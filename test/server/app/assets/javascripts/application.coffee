@@ -1,5 +1,4 @@
 #= require 'written'
-#= require 'secrets'
 #= require 'prism'
 
 code = Written.Parsers.Block.get('Code').prototype

@@ -26,7 +26,7 @@ class Code
     current.outerHTML == rendered.outerHTML
 
   markdown: =>
-    node = "<pre><code></code></pre>".toHTML()
+    node = "<pre is='written-pre'><code></code></pre>".toHTML()
     code = node.querySelector('code')
 
     if @matches[0][3]?
@@ -59,3 +59,32 @@ class Code
 Code.rule = /^((~{3})([a-z]+)?)(?:\s(.*))?/i
 
 Written.Parsers.Block.register Code
+
+prototype = Object.create(HTMLPreElement.prototype)
+
+prototype.getRange = (offset, walker) ->
+  range = document.createRange()
+
+  if !@firstChild?
+    range.setStart(this, 0)
+  else
+    while walker.nextNode()
+      if walker.currentNode.length < offset
+        offset -= walker.currentNode.length
+        continue
+
+      range.setStart(walker.currentNode, offset)
+      break
+
+  range.collapse(true)
+  range
+prototype.toString = ->
+  if @textContent[@textContent.length - 1] == '\n'
+    @textContent.substr(0, @textContent.length - 1)
+  else
+    @textContent
+
+document.registerElement('written-pre', {
+  prototype: prototype
+  extends: 'pre'
+})

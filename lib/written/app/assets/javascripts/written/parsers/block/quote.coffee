@@ -25,7 +25,7 @@ class Quote
     current.outerHTML == rendered.outerHTML
 
   markdown: =>
-    node = "<blockquote></blockquote>".toHTML()
+    node = "<blockquote is='written-blockquote'></blockquote>".toHTML()
     for line, index in @content
       p = "<p>".toHTML()
       p.appendChild(document.createTextNode(@matches[index][1]))
@@ -63,3 +63,30 @@ class Quote
 Quote.rule = /^(>\s)(.*)/i
 
 Written.Parsers.Block.register Quote
+
+prototype = Object.create(HTMLQuoteElement.prototype)
+
+prototype.getRange = (offset, walker) ->
+  range = document.createRange()
+
+  if !@firstChild?
+    range.setStart(this, 0)
+  else
+    while walker.nextNode()
+      if walker.currentNode.length < offset
+        offset -= walker.currentNode.length
+        continue
+
+      range.setStart(walker.currentNode, offset)
+      break
+
+  range.collapse(true)
+  range
+
+prototype.toString = ->
+  @textContent
+
+document.registerElement('written-blockquote', {
+  prototype: prototype
+  extends: 'blockquote'
+})

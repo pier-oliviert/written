@@ -27,9 +27,9 @@ class OList
     current.outerHTML == rendered.outerHTML
 
   markdown: =>
-    node = "<ol></ol>".toHTML()
+    node = "<ol is='written-ol'></ol>".toHTML()
     for line, index in @content
-      li = "<li>".toHTML()
+      li = "<li is='written-li'>".toHTML()
       li.appendChild(document.createTextNode(@matches[index][1]))
 
       for text in line
@@ -58,7 +58,43 @@ class OList
     node
 
 
-OList.rule = /^(\d\.\s)(.*)/i
+OList.rule = /^(\d+\.\s)(.*)/i
 
 Written.Parsers.Block.register OList
 
+prototype = Object.create(HTMLOListElement.prototype)
+
+prototype.toString = ->
+  texts = Array.prototype.slice.call(@children).map (li) ->
+    li.toString()
+  texts.join("\n")
+
+prototype.getRange = (offset, walker) ->
+  range = document.createRange()
+  if !@firstChild?
+    range.setStart(this, 0)
+    return
+
+  li = this.firstElementChild
+
+  while walker.nextNode()
+    if !li.contains(walker.currentNode)
+      newList = walker.currentNode
+      while newList? && !(newList instanceof HTMLLIElement)
+        newList = newList.parentElement
+      li = newList
+      offset--
+
+    if walker.currentNode.length < offset
+      offset -= walker.currentNode.length
+      continue
+    range.setStart(walker.currentNode, offset)
+    break
+
+  range.collapse(true)
+  range
+
+document.registerElement('written-ol', {
+  prototype: prototype
+  extends: 'ol'
+})

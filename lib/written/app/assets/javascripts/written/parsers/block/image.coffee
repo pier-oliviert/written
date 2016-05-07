@@ -29,7 +29,7 @@ class Image
 
 
   markdown: =>
-    figure = "<figure><div contenteditable='false'><div class='progress'></div><input type='file' /><img/></div><figcaption /></figure>".toHTML()
+    figure = "<figure is='written-figure'><div contenteditable='false'><div class='progress'></div><input type='file' /><img/></div><figcaption /></figure>".toHTML()
     caption = figure.querySelector('figcaption')
     container = figure.querySelector('div')
 
@@ -82,3 +82,31 @@ Image.uploader = (uploader) ->
   Image::configure = uploader.initialize
 
 Written.Parsers.Block.register Image
+
+prototype = Object.create(HTMLElement.prototype)
+
+prototype.getRange = (offset, walker) ->
+  range = document.createRange()
+
+  if !@firstChild?
+    range.setStart(this, 0)
+  else
+    while walker.nextNode()
+      if walker.currentNode.length < offset
+        offset -= walker.currentNode.length
+        continue
+
+      range.setStart(walker.currentNode, offset)
+      break
+
+  range.collapse(true)
+  range
+
+prototype.toString = ->
+  (@querySelector('figcaption') || this).textContent
+
+document.registerElement('written-figure', {
+  prototype: prototype
+  extends: 'figure'
+})
+

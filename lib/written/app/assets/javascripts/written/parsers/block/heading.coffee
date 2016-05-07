@@ -15,7 +15,7 @@ class Header
     current.outerHTML == rendered.outerHTML
 
   markdown: =>
-    node = "<h#{@match[2].length}>".toHTML()
+    node = "<h#{@match[2].length} is='written-h#{@match[2].length}'>".toHTML()
     for text in @content
       if text.markdown?
         node.appendChild(text.markdown())
@@ -37,3 +37,29 @@ class Header
 Header.rule = /^((#{1,6})\s)(.*)$/i
 
 Written.Parsers.Block.register Header
+
+[1,2,3,4,5,6].forEach (size) ->
+  prototype = Object.create(HTMLHeadingElement.prototype)
+  prototype.getRange = (offset, walker) ->
+    range = document.createRange()
+
+    if !@firstChild?
+      range.setStart(this, 0)
+    else
+      while walker.nextNode()
+        if walker.currentNode.length < offset
+          offset -= walker.currentNode.length
+          continue
+
+        range.setStart(walker.currentNode, offset)
+        break
+
+    range.collapse(true)
+    range
+  prototype.toString = ->
+    @textContent
+
+  document.registerElement("written-h#{size}", {
+    prototype: prototype
+    extends: "h#{size}"
+  })

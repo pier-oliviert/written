@@ -1,4 +1,0 @@
-HTMLDivElement::toString = ->
-  @textContent
-
-
