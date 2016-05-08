@@ -90,7 +90,7 @@ Images = new class
 
   upload: (name, file) =>
     image = {
-      url: "#{@settings.bucket}/#{name}"
+      url: "#{@settings.url}/#{name}"
       name: name
       status: 'uploading'
       progress: 0
@@ -106,7 +106,7 @@ Images = new class
     form.append('file', file, name)
 
 
-    image.xhr = @send(form, @settings.bucket)
+    image.xhr = @send(form, @settings.url)
     image.xhr.addEventListener('load', @update.bind(this, image))
     image.xhr.addEventListener('error', @failed.bind(this, image))
 
