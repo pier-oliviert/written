@@ -43,7 +43,7 @@ class Written.Uploaders.AWS
   process: (file, node) =>
     caption = node.querySelector('figcaption')
     progress = node.querySelector('div.progress')
-    filename = @hash(file.name)
+    filename = [Images.settings.namespace, @hash(file.name)].join('/')
 
     image = Images.get(filename)
     if !image
