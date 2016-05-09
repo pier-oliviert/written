@@ -17,6 +17,7 @@ class @Written
     @element().addEventListener('keypress', @linefeed)
     @element().addEventListener('keydown', @undo)
     @element().addEventListener('keydown', @redo)
+    @element().addEventListener('keydown', @cursor)
 
 
   preventDefaults: (e) ->
@@ -65,6 +66,9 @@ class @Written
     @update(newDocument)
     @history.push(newDocument)
     @dispatch('written:changed', document: newDocument)
+
+  cursor: =>
+    @history.current.cursor = new Written.Cursor(@element(), window.getSelection())
 
   update: (document) =>
     elements = Array.prototype.slice.call(@element().children)
