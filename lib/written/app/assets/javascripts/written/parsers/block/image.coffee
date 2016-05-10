@@ -1,4 +1,5 @@
 class Image
+  @parserName: 'Image'
   multiline: false
 
   constructor: (match) ->

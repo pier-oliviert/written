@@ -59,7 +59,7 @@ class @Written.Parsers.Block
 
 @Written.Parsers.Block.get = (name) ->
   Written.Parsers.Block.parsers.available.find (p) ->
-    p.name.localeCompare(name) == 0
+    p.parserName.localeCompare(name) == 0
 
 @Written.Parsers.Block.register = (parser, defaultParser = false) ->
   if defaultParser

@@ -1,4 +1,5 @@
 class Paragraph
+  @parserName: 'Paragraph'
   multiline: false
 
   constructor: (match) ->

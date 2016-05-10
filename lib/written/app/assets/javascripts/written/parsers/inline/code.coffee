@@ -1,4 +1,5 @@
 class Code
+  @parserName: 'Code'
   constructor: (match) ->
     @match = match
 

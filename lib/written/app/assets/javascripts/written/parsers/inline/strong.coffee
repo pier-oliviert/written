@@ -1,4 +1,5 @@
 class Strong
+  @parserName: 'Strong'
   constructor: (match) ->
     @match = match
 

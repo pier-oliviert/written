@@ -1,4 +1,5 @@
 class Code
+  @parserName: 'Code'
   multiline: true
 
   constructor: (match) ->

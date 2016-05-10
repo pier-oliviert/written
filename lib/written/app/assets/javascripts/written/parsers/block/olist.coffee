@@ -1,4 +1,5 @@
 class OList
+  @parserName: 'OList'
   multiline: true
 
   constructor: (match) ->

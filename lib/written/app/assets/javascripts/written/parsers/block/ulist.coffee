@@ -1,4 +1,5 @@
 class UList
+  @parserName: 'UList'
   multiline: true
 
   constructor: (match) ->

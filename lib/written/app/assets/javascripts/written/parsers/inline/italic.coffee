@@ -1,4 +1,5 @@
 class Italic
+  @parserName: 'Italic'
   constructor: (match) ->
     @match = match
 

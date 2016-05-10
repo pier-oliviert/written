@@ -71,7 +71,7 @@ class @Written.Parsers.Inline
 
 @Written.Parsers.Inline.get = (name) ->
   Written.Parsers.Inline.parsers.available.find (p) ->
-    p.name.localeCompare(name) == 0
+    p.parserName.localeCompare(name) == 0
 
 @Written.Parsers.Inline.parsers = {
   available: []

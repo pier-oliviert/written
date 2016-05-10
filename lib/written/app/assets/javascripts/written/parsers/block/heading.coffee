@@ -1,4 +1,5 @@
 class Header
+  @parserName: 'Header'
   multiline: false
 
   constructor: (match) ->

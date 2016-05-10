@@ -1,4 +1,5 @@
 class Quote
+  @parserName: 'Quote'
   multiline: true
 
   constructor: (match) ->

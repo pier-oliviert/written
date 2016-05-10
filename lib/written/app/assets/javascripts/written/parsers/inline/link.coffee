@@ -1,4 +1,5 @@
 class Link
+  @parserName: 'Link'
   constructor: (match) ->
     @match = match
 
