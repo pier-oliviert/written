@@ -1,5 +1,4 @@
 class UList
-  @parserName: 'UList'
   multiline: true
 
   constructor: (match) ->
@@ -10,26 +9,28 @@ class UList
 
     @opened
 
+  raw: ->
+    texts = @matches.map (match) ->
+      match[0]
+
+    texts.join('\n')
+
+  text: ->
+    texts = @matches.map (match) ->
+      match[2]
+
+    texts.join('\n')
+
   append: (text) ->
     @matches.push(UList.rule.exec(text))
-
-  processContent: (callback) =>
-    if @content?
-      throw "Content Error: The content was already processed"
-      return
-
-    lines = @matches.map (match) ->
-      match[2]
-    
-    @content = callback(lines)
 
   identical: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
   markdown: =>
-    node = "<ul is='written-ul'></ul>".toHTML()
+    node = "<ul></ul>".toHTML()
     for line, index in @content
-      li = "<li is='written-li'>".toHTML()
+      li = "<li>".toHTML()
       li.appendChild(document.createTextNode(@matches[index][1]))
 
       for text in line
@@ -59,41 +60,38 @@ class UList
 
 UList.rule = /^(-\s)(.*)/i
 
-Written.Parsers.Block.register UList
+Written.Parsers.register {
+  parser: UList
+  node: 'ul'
+  type: 'block'
+  getRange: (node, offset, walker) ->
+    range = document.createRange()
+    if !node.firstChild?
+      range.setStart(node, 0)
+      return
 
-prototype = Object.create(HTMLUListElement.prototype)
+    li = node.firstElementChild
 
-prototype.toString = ->
-  texts = Array.prototype.slice.call(@children).map (li) ->
-    li.toString()
-  texts.join("\n")
+    while walker.nextNode()
+      if !li.contains(walker.currentNode)
+        newList = walker.currentNode
+        while newList? && !(newList instanceof HTMLLIElement)
+          newList = newList.parentElement
+        li = newList
+        offset--
 
-prototype.getRange = (offset, walker) ->
-  range = document.createRange()
-  if !@firstChild?
-    range.setStart(this, 0)
-    return
+      if walker.currentNode.length < offset
+        offset -= walker.currentNode.length
+        continue
+      range.setStart(walker.currentNode, offset)
+      break
 
-  li = this.firstElementChild
+    range.collapse(true)
+    range
 
-  while walker.nextNode()
-    if !li.contains(walker.currentNode)
-      newList = walker.currentNode
-      while newList? && !(newList instanceof HTMLLIElement)
-        newList = newList.parentElement
-      li = newList
-      offset--
+  toString: (node) ->
+    texts = Array.prototype.slice.call(node.children).map (li) ->
+      li.textContent
+    texts.join("\n")
 
-    if walker.currentNode.length < offset
-      offset -= walker.currentNode.length
-      continue
-    range.setStart(walker.currentNode, offset)
-    break
-
-  range.collapse(true)
-  range
-
-document.registerElement('written-ul', {
-  prototype: prototype
-  extends: 'ul'
-})
+}

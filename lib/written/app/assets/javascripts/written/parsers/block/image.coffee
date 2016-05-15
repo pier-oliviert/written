@@ -1,16 +1,14 @@
 class Image
-  @parserName: 'Image'
   multiline: false
 
   constructor: (match) ->
     @match = match
 
-  processContent: (callback) =>
-    if @content?
-      throw "Content Error: The content was already processed"
-      return
+  raw: ->
+    @match[0]
 
-    @content = callback(@match[2])
+  text: ->
+    @match[2]
 
   identical: (current, rendered) ->
 
@@ -82,32 +80,28 @@ Image.rule = /^(!{1}\[([^\]]*)\])(\(([^\s]*)?\))$/i
 Image.uploader = (uploader) ->
   Image::configure = uploader.initialize
 
-Written.Parsers.Block.register Image
 
-prototype = Object.create(HTMLElement.prototype)
+Written.Parsers.register {
+  parser: Image
+  node: 'figure'
+  type: 'block'
+  getRange: (node, offset, walker) ->
+    range = document.createRange()
 
-prototype.getRange = (offset, walker) ->
-  range = document.createRange()
+    if !node.firstChild?
+      range.setStart(this, 0)
+    else
+      while walker.nextNode()
+        if walker.currentNode.length < offset
+          offset -= walker.currentNode.length
+          continue
 
-  if !@firstChild?
-    range.setStart(this, 0)
-  else
-    while walker.nextNode()
-      if walker.currentNode.length < offset
-        offset -= walker.currentNode.length
-        continue
+        range.setStart(walker.currentNode, offset)
+        break
 
-      range.setStart(walker.currentNode, offset)
-      break
+    range.collapse(true)
+    range
 
-  range.collapse(true)
-  range
-
-prototype.toString = ->
-  (@querySelector('figcaption') || this).textContent
-
-document.registerElement('written-figure', {
-  prototype: prototype
-  extends: 'figure'
-})
-
+  toString: (node) ->
+    (node.querySelector('figcaption') || node).textContent
+}

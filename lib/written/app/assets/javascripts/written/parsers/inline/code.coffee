@@ -1,5 +1,4 @@
 class Code
-  @parserName: 'Code'
   constructor: (match) ->
     @match = match
 
@@ -10,7 +9,7 @@ class Code
     @match[0].length
 
   markdown: =>
-    node = "<code is='written-code'>#{this.match[0]}</code>".toHTML()
+    node = "<code>#{this.match[0]}</code>".toHTML()
     if @match[3]?
       node.classList.add("language-#{@match[3]}")
 
@@ -28,31 +27,30 @@ class Code
 
 Code.rule = /((~{3})([a-z]+)?)\s(.+)?(~{3})/gi
 
-Written.Parsers.Inline.register Code
+Written.Parsers.register {
+  parser: Code
+  node: 'code'
+  type: 'inline'
+  getRange: (node, offset, walker) ->
+    range = document.createRange()
 
-prototype = Object.create(HTMLElement.prototype)
+    if !@firstChild?
+      range.setStart(this, 0)
+    else
+      while walker.nextNode()
+        if walker.currentNode.length < offset
+          offset -= walker.currentNode.length
+          continue
 
-prototype.getRange = (offset, walker) ->
-  range = document.createRange()
+        range.setStart(walker.currentNode, offset)
+        break
 
-  if !@firstChild?
-    range.setStart(this, 0)
-  else
-    while walker.nextNode()
-      if walker.currentNode.length < offset
-        offset -= walker.currentNode.length
-        continue
+    range.collapse(true)
+    range
 
-      range.setStart(walker.currentNode, offset)
-      break
+  toString: (node) ->
+    node.textContent
 
-  range.collapse(true)
-  range
-
-prototype.toString = ->
-  @textContent
-
-document.registerElement('written-code', {
-  prototype: prototype
-  extends: 'code'
-})
+  highlightWith: (callback) ->
+    Code.prototype.highlight = callback
+}

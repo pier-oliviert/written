@@ -1,5 +1,4 @@
 class OList
-  @parserName: 'OList'
   multiline: true
 
   constructor: (match) ->
@@ -14,23 +13,25 @@ class OList
   append: (text) ->
     @matches.push(OList.rule.exec(text))
 
-  processContent: (callback) =>
-    if @content?
-      throw "Content Error: The content was already processed"
-      return
-
-    lines = @matches.map (match) ->
-      match[2]
-    
-    @content = callback(lines)
-
   identical: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
+  raw: ->
+    texts = @matches.map (match) ->
+      match[0]
+
+    texts.join('\n')
+
+  text: ->
+    texts = @matches.map (match) ->
+      match[2]
+
+    texts.join('\n')
+
   markdown: =>
-    node = "<ol is='written-ol'></ol>".toHTML()
+    node = "<ol></ol>".toHTML()
     for line, index in @content
-      li = "<li is='written-li'>".toHTML()
+      li = "<li>".toHTML()
       li.appendChild(document.createTextNode(@matches[index][1]))
 
       for text in line
@@ -61,41 +62,37 @@ class OList
 
 OList.rule = /^(\d+\.\s)(.*)/i
 
-Written.Parsers.Block.register OList
+Written.Parsers.register {
+  parser: OList
+  node: 'ol'
+  type: 'block'
+  getRange: (node, offset, walker) ->
+    range = document.createRange()
+    if !node.firstChild?
+      range.setStart(node, 0)
+      return
 
-prototype = Object.create(HTMLOListElement.prototype)
+    li = node.firstElementChild
 
-prototype.toString = ->
-  texts = Array.prototype.slice.call(@children).map (li) ->
-    li.toString()
-  texts.join("\n")
+    while walker.nextNode()
+      if !li.contains(walker.currentNode)
+        newList = walker.currentNode
+        while newList? && !(newList instanceof HTMLLIElement)
+          newList = newList.parentElement
+        li = newList
+        offset--
 
-prototype.getRange = (offset, walker) ->
-  range = document.createRange()
-  if !@firstChild?
-    range.setStart(this, 0)
-    return
+      if walker.currentNode.length < offset
+        offset -= walker.currentNode.length
+        continue
+      range.setStart(walker.currentNode, offset)
+      break
 
-  li = this.firstElementChild
+    range.collapse(true)
+    range
 
-  while walker.nextNode()
-    if !li.contains(walker.currentNode)
-      newList = walker.currentNode
-      while newList? && !(newList instanceof HTMLLIElement)
-        newList = newList.parentElement
-      li = newList
-      offset--
-
-    if walker.currentNode.length < offset
-      offset -= walker.currentNode.length
-      continue
-    range.setStart(walker.currentNode, offset)
-    break
-
-  range.collapse(true)
-  range
-
-document.registerElement('written-ol', {
-  prototype: prototype
-  extends: 'ol'
-})
+  toString: (node) ->
+    texts = Array.prototype.slice.call(node.children).map (li) ->
+      li.textContent
+    texts.join("\n")
+}

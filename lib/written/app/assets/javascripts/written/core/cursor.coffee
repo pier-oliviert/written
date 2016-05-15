@@ -15,7 +15,7 @@ class Written.Cursor
         child = node.previousSibling
 
         while child
-          @offset += Written.Stringify(child).length
+          @offset += Written.Parsers.toString(child).length
           child = child.previousSibling
 
         if node instanceof HTMLLIElement
@@ -27,7 +27,7 @@ class Written.Cursor
     for child in @element().children
       if child == node
         break
-      @offset += Written.Stringify(child).length
+      @offset += Written.Parsers.toString(child).length
       @offset += 1
 
     @currentNode = ->
@@ -39,7 +39,7 @@ class Written.Cursor
 
     element = @element().firstElementChild
     while element && element != node
-      offset -= Written.Stringify(element).length
+      offset -= Written.Parsers.toString(element).length
       element = element.nextElementSibling
 
     offset
@@ -53,12 +53,12 @@ class Written.Cursor
     if node is undefined
       node = @element().firstElementChild
 
-    while node.nextElementSibling && Written.Stringify(node).length < offset
-      offset -= Written.Stringify(node).length + 1
+    while node.nextElementSibling && Written.Parsers.toString(node).length < offset
+      offset -= Written.Parsers.toString(node).length + 1
       node = node.nextElementSibling
 
 
-    range = node.getRange(Math.min(offset, Written.Stringify(node).length), document.createTreeWalker(node, NodeFilter.SHOW_TEXT))
+    range = Written.Parsers.getRange(node, Math.min(offset, Written.Parsers.toString(node).length), document.createTreeWalker(node, NodeFilter.SHOW_TEXT))
 
     if @offsetDiffersBetween(@selection, range)
       @selection.removeAllRanges()

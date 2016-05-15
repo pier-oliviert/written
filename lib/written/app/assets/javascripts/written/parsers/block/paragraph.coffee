@@ -1,5 +1,4 @@
 class Paragraph
-  @parserName: 'Paragraph'
   multiline: false
 
   constructor: (match) ->
@@ -15,8 +14,14 @@ class Paragraph
   identical: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
+  text: =>
+    @match[0]
+
+  raw: =>
+    @match[0]
+
   markdown: =>
-    node = "<p is='written-p'>".toHTML()
+    node = "<p>".toHTML()
     for text in @content
       if text.markdown?
         node.appendChild(text.markdown())
@@ -39,31 +44,29 @@ class Paragraph
 
 Paragraph.rule = /.*/i
 
-Written.Parsers.Block.register Paragraph, true
+Written.Parsers.register {
+  parser: Paragraph
+  node: 'p'
+  type: 'block'
+  default: true
+  getRange: (node, offset, walker) ->
+    range = document.createRange()
 
-prototype = Object.create(HTMLParagraphElement.prototype)
+    if !node.firstChild?
+      range.setStart(node, 0)
+    else
+      while walker.nextNode()
+        if walker.currentNode.length < offset
+          offset -= walker.currentNode.length
+          continue
 
-prototype.getRange = (offset, walker) ->
-  range = document.createRange()
+        range.setStart(walker.currentNode, offset)
+        break
 
-  if !@firstChild?
-    range.setStart(this, 0)
-  else
-    while walker.nextNode()
-      if walker.currentNode.length < offset
-        offset -= walker.currentNode.length
-        continue
+    range.collapse(true)
+    range
 
-      range.setStart(walker.currentNode, offset)
-      break
+  toString: (node) ->
+    node.textContent
 
-  range.collapse(true)
-  range
-
-prototype.toString = ->
-  @textContent
-
-document.registerElement('written-p', {
-  prototype: prototype
-  extends: 'p'
-})
+}

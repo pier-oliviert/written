@@ -26,14 +26,12 @@ class @Written
   initialize: (text, parsers) ->
     @observer.pause()
     if !parsers?
-      parsers = Written.Parsers.default()
+      parsers = Written.Parsers
 
     @parsers = parsers
 
     if @element().contentEditable != 'true'
       @element().contentEditable = 'true'
-
-    @parsers.freeze()
 
     document = new Written.Document(text, @parsers)
     cursor = new Written.Cursor(@element(), window.getSelection())
@@ -146,7 +144,7 @@ class @Written
   toString: =>
     texts = []
     for node in @element().childNodes
-      content = node.toString().split('\n')
+      content = Written.Parsers.toString(node).split('\n')
       texts.push content.join('\n')
 
     texts.join '\n'

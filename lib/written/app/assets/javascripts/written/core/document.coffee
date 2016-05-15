@@ -1,13 +1,16 @@
 #= require ../parsers/parsers
 
 class Written.Document
-  constructor: (textContent, parsers) ->
-    @markdown = textContent
-
-    @blocks = parsers.block.parse(textContent.split('\n').reverse())
+  constructor: (text, parsers) ->
+    @blocks = parsers.parse(parsers.blocks, text)
 
     @blocks.forEach (block) =>
-      block.processContent(parsers.inline.parse.bind(parsers.inline))
+      if block.text?
+        if block.multiline
+          block.content = block.text().split('\n').map (text) ->
+            parsers.parse(parsers.inlines, text)
+        else
+          block.content = parsers.parse(parsers.inlines, block.text())
 
   freeze: =>
     Object.freeze(@blocks)
@@ -22,4 +25,11 @@ class Written.Document
     text
 
   toString: =>
-    @markdown
+    if @toString.cache?
+      return @toString.cache
+
+    texts = @blocks.map (block) ->
+      block.raw()
+
+    texts.join('\n')
+

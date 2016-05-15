@@ -1,5 +1,4 @@
 class Quote
-  @parserName: 'Quote'
   multiline: true
 
   constructor: (match) ->
@@ -12,21 +11,23 @@ class Quote
   append: (text) ->
     @matches.push(Quote.rule.exec(text))
 
-  processContent: (callback) =>
-    if @content?
-      throw "Content Error: The content was already processed"
-      return
+  raw: ->
+    lines = @matches.map (match) ->
+      match[0]
 
+    lines.join('\n')
+
+  text: =>
     lines = @matches.map (match) ->
       match[2]
-    
-    @content = callback(lines)
+
+    lines.join('\n')
 
   identical: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
   markdown: =>
-    node = "<blockquote is='written-blockquote'></blockquote>".toHTML()
+    node = "<blockquote></blockquote>".toHTML()
     for line, index in @content
       p = "<p>".toHTML()
       p.appendChild(document.createTextNode(@matches[index][1]))
@@ -63,31 +64,28 @@ class Quote
 
 Quote.rule = /^(>\s)(.*)/i
 
-Written.Parsers.Block.register Quote
+Written.Parsers.register {
+  parser: Quote
+  node: 'blockquote'
+  type: 'block'
+  getRange: (node, offset, walker) ->
+    range = document.createRange()
 
-prototype = Object.create(HTMLQuoteElement.prototype)
+    if !node.firstChild?
+      range.setStart(this, 0)
+    else
+      while walker.nextNode()
+        if walker.currentNode.length < offset
+          offset -= walker.currentNode.length
+          continue
 
-prototype.getRange = (offset, walker) ->
-  range = document.createRange()
+        range.setStart(walker.currentNode, offset)
+        break
 
-  if !@firstChild?
-    range.setStart(this, 0)
-  else
-    while walker.nextNode()
-      if walker.currentNode.length < offset
-        offset -= walker.currentNode.length
-        continue
+    range.collapse(true)
+    range
 
-      range.setStart(walker.currentNode, offset)
-      break
+  toString: (node) ->
+    node.textContent
 
-  range.collapse(true)
-  range
-
-prototype.toString = ->
-  @textContent
-
-document.registerElement('written-blockquote', {
-  prototype: prototype
-  extends: 'blockquote'
-})
+}

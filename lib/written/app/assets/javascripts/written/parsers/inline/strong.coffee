@@ -1,5 +1,4 @@
 class Strong
-  @parserName: 'Strong'
   constructor: (match) ->
     @match = match
 
@@ -10,38 +9,35 @@ class Strong
     @match[0].length
 
   markdown: =>
-    "<strong is='written-strong'>#{@match[0]}</strong>".toHTML()
+    "<strong>#{@match[0]}</strong>".toHTML()
 
   html: =>
     "<strong>#{@match[3]}</strong>".toHTML()
 
 Strong.rule = /((\*{1})([^\*]+)(\*{1}))/gi
 
-Written.Parsers.Inline.register Strong
+Written.Parsers.register {
+  parser: Strong
+  node: 'strong'
+  type: 'inline'
+  getRange: (node, offset, walker) ->
+    range = document.createRange()
 
-prototype = Object.create(HTMLElement.prototype)
+    if !node.firstChild?
+      range.setStart(this, 0)
+    else
+      while walker.nextNode()
+        if walker.currentNode.length < offset
+          offset -= walker.currentNode.length
+          continue
 
-prototype.getRange = (offset, walker) ->
-  range = document.createRange()
+        range.setStart(walker.currentNode, offset)
+        break
 
-  if !@firstChild?
-    range.setStart(this, 0)
-  else
-    while walker.nextNode()
-      if walker.currentNode.length < offset
-        offset -= walker.currentNode.length
-        continue
+    range.collapse(true)
+    range
 
-      range.setStart(walker.currentNode, offset)
-      break
+  toString: (node) ->
+    node.textContent
 
-  range.collapse(true)
-  range
-
-prototype.toString = ->
-  @textContent
-
-document.registerElement('written-strong', {
-  prototype: prototype
-  extends: 'strong'
-})
+}

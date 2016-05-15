@@ -1,22 +1,21 @@
 class Header
-  @parserName: 'Header'
   multiline: false
 
   constructor: (match) ->
     @match = match
 
-  processContent: (callback) =>
-    if @content?
-      throw "Content Error: The content was already processed"
-      return
-
-    @content = callback(@match[3])
-
   identical: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
+  text: ->
+    @match[3]
+
+  raw: ->
+    @match[0]
+
   markdown: =>
-    node = "<h#{@match[2].length} is='written-h#{@match[2].length}'>".toHTML()
+    node = "<h#{@match[2].length}>".toHTML()
+
     for text in @content
       if text.markdown?
         node.appendChild(text.markdown())
@@ -37,30 +36,29 @@ class Header
 
 Header.rule = /^((#{1,6})\s)(.*)$/i
 
-Written.Parsers.Block.register Header
 
 [1,2,3,4,5,6].forEach (size) ->
-  prototype = Object.create(HTMLHeadingElement.prototype)
-  prototype.getRange = (offset, walker) ->
-    range = document.createRange()
+  Written.Parsers.register {
+    parser: Header
+    node: "h#{size}"
+    type: 'block'
+    getRange: (node, offset, walker) ->
+      range = document.createRange()
 
-    if !@firstChild?
-      range.setStart(this, 0)
-    else
-      while walker.nextNode()
-        if walker.currentNode.length < offset
-          offset -= walker.currentNode.length
-          continue
+      if !node.firstChild?
+        range.setStart(node, 0)
+      else
+        while walker.nextNode()
+          if walker.currentNode.length < offset
+            offset -= walker.currentNode.length
+            continue
 
-        range.setStart(walker.currentNode, offset)
-        break
+          range.setStart(walker.currentNode, offset)
+          break
 
-    range.collapse(true)
-    range
-  prototype.toString = ->
-    @textContent
+      range.collapse(true)
+      range
 
-  document.registerElement("written-h#{size}", {
-    prototype: prototype
-    extends: "h#{size}"
-  })
+    toString: (node) ->
+      node.textContent
+  }

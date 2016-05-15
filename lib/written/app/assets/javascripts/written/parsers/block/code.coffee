@@ -1,5 +1,4 @@
 class Code
-  @parserName: 'Code'
   multiline: true
 
   constructor: (match) ->
@@ -7,6 +6,11 @@ class Code
     @content = "\n"
     @opened = true
 
+
+  raw: ->
+    texts = @matches.map (m) ->
+      m[0]
+    texts.join('\n')
 
   accepts: (text) ->
     @opened
@@ -17,17 +21,17 @@ class Code
       @matches.push(match)
       @opened = false
     else
+      @matches.push([text])
       @content += text + "\n"
 
     @content
 
-  processContent: (callback) =>
 
   identical: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
   markdown: =>
-    node = "<pre is='written-pre'><code></code></pre>".toHTML()
+    node = "<pre><code></code></pre>".toHTML()
     code = node.querySelector('code')
 
     if @matches[0][3]?
@@ -39,7 +43,7 @@ class Code
 
     code.insertAdjacentHTML('afterbegin', @matches[0][0])
     if !@opened
-      code.insertAdjacentHTML('beforeend', @matches[1][0])
+      code.insertAdjacentHTML('beforeend', @matches[@matches.length - 1][0])
 
     node
 
@@ -59,33 +63,33 @@ class Code
 
 Code.rule = /^((~{3})([a-z]+)?)(?:\s(.*))?/i
 
-Written.Parsers.Block.register Code
+Written.Parsers.register {
+  parser: Code
+  node: 'pre'
+  type: 'block'
+  getRange: (node, offset, walker) ->
+    range = document.createRange()
 
-prototype = Object.create(HTMLPreElement.prototype)
+    if !node.firstChild?
+      range.setStart(node, 0)
+    else
+      while walker.nextNode()
+        if walker.currentNode.length < offset
+          offset -= walker.currentNode.length
+          continue
 
-prototype.getRange = (offset, walker) ->
-  range = document.createRange()
+        range.setStart(walker.currentNode, offset)
+        break
 
-  if !@firstChild?
-    range.setStart(this, 0)
-  else
-    while walker.nextNode()
-      if walker.currentNode.length < offset
-        offset -= walker.currentNode.length
-        continue
+    range.collapse(true)
+    range
 
-      range.setStart(walker.currentNode, offset)
-      break
+  toString: (node) ->
+    if node.textContent[node.textContent.length - 1] == '\n'
+      node.textContent.substr(0, node.textContent.length - 1)
+    else
+      node.textContent
 
-  range.collapse(true)
-  range
-prototype.toString = ->
-  if @textContent[@textContent.length - 1] == '\n'
-    @textContent.substr(0, @textContent.length - 1)
-  else
-    @textContent
-
-document.registerElement('written-pre', {
-  prototype: prototype
-  extends: 'pre'
-})
+  highlightWith: (callback) ->
+    Code.prototype.highlight = callback
+}
