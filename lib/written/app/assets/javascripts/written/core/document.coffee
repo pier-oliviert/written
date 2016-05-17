@@ -24,6 +24,25 @@ class Written.Document
 
     text
 
+  applyTo: (content) =>
+    elements = Array.prototype.slice.call(content.children)
+
+    for block, index in @blocks
+      node = block.markdown()
+      element = elements[index]
+
+      if element?
+        if !block.identical(element, node)
+          content.replaceChild(node, element)
+      else
+        content.appendChild(node)
+
+    if elements.length > index
+      for i in [index..elements.length - 1]
+        elements[i].remove()
+
+    @cursor.focus()
+
   toString: =>
     if @toString.cache?
       return @toString.cache
