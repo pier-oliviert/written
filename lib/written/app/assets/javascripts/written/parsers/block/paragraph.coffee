@@ -4,14 +4,7 @@ class Paragraph
   constructor: (match) ->
     @match = match
 
-  processContent: (callback) =>
-    if @content?
-      throw "Content Error: The content was already processed"
-      return
-
-    @content = callback(@match[0])
-
-  identical: (current, rendered) ->
+  equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
   text: =>

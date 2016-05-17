@@ -25,23 +25,27 @@ class Written.Document
     text
 
   applyTo: (content) =>
-    elements = Array.prototype.slice.call(content.children)
 
     for block, index in @blocks
-      node = block.markdown()
-      element = elements[index]
+      remaining = Array.prototype.slice.call(content.children, index)
+      element = remaining[0]
+      node = @findNodeFor(block, remaining)
 
-      if element?
-        if !block.identical(element, node)
-          content.replaceChild(node, element)
-      else
-        content.appendChild(node)
+      content.insertBefore(node, element)
 
-    if elements.length > index
-      for i in [index..elements.length - 1]
-        elements[i].remove()
+    elements = Array.prototype.slice.call(content.children, index)
+    for element in elements
+      element.remove()
 
     @cursor.focus()
+
+  findNodeFor: (block, remaining) ->
+    node = block.markdown()
+
+    found = remaining.find (existing) ->
+      block.equals(existing, node)
+
+    found || node
 
   toString: =>
     if @toString.cache?

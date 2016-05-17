@@ -27,7 +27,7 @@ class Code
     @content
 
 
-  identical: (current, rendered) ->
+  equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
   markdown: =>

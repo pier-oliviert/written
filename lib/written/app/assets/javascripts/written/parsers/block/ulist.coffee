@@ -24,7 +24,7 @@ class UList
   append: (text) ->
     @matches.push(UList.rule.exec(text))
 
-  identical: (current, rendered) ->
+  equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
   markdown: =>

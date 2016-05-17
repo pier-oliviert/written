@@ -23,7 +23,7 @@ class Quote
 
     lines.join('\n')
 
-  identical: (current, rendered) ->
+  equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
   markdown: =>

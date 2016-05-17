@@ -10,25 +10,15 @@ class Image
   text: ->
     @match[2]
 
-  identical: (current, rendered) ->
+  equals: (current, rendered) ->
+    figcaption = current.querySelector('figcaption') || {}
+    img = current.querySelector('img') || {}
 
-    sameNode = (current, rendered) ->
-      current.nodeName == rendered.nodeName
-
-    sameImages = (current, rendered) ->
-      (current? && current.dataset.image) == (rendered? && rendered.dataset.image)
-
-    sameTexts = (current, rendered) ->
-      (current? && current.innerHTML) == (rendered? && rendered.innerHTML)
-
-
-    sameNode(current, rendered) &&
-    sameImages(current.querySelector('img'), rendered.querySelector('img')) &&
-    sameTexts(current.querySelector('figcaption'), rendered.querySelector('figcaption'))
-
+    rendered.querySelector('figcaption').outerHTML == figcaption.outerHTML &&
+    rendered.querySelector('img').src == img.src
 
   markdown: =>
-    figure = "<figure is='written-figure'><div contenteditable='false'><div class='progress'></div><input type='file' /><img/></div><figcaption /></figure>".toHTML()
+    figure = "<figure><div contenteditable='false'><input type='file' /><img/></div><figcaption /></figure>".toHTML()
     caption = figure.querySelector('figcaption')
     container = figure.querySelector('div')
 
@@ -45,7 +35,6 @@ class Image
     img = figure.querySelector('img')
     if @match[4]?
       img.src = img.dataset.image = @match[4]
-      img.onerror = @placeholder.bind(this, img, true)
     else
       img.src = '/assets/written/placeholder.png'
 
@@ -72,8 +61,6 @@ class Image
   placeholder: (img, event, onerror = false) =>
     img.src = '/assets/written/placeholder.png'
     img.onerror = undefined
-    if onerror
-      img.classList.add 'error'
 
 Image.rule = /^(!{1}\[([^\]]*)\])(\(([^\s]*)?\))$/i
 

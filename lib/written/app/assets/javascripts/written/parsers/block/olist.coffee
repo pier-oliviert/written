@@ -13,7 +13,7 @@ class OList
   append: (text) ->
     @matches.push(OList.rule.exec(text))
 
-  identical: (current, rendered) ->
+  equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
   raw: ->
