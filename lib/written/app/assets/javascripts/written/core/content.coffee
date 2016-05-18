@@ -70,26 +70,6 @@ class @Written
   cursor: =>
     @history.current.cursor = new Written.Cursor(@element(), window.getSelection())
 
-  update: (document) =>
-    elements = Array.prototype.slice.call(@element().children)
-
-    for block, index in document.blocks
-      node = block.markdown()
-      element = elements[index]
-
-      if element?
-        if !block.identical(element, node)
-          @element().replaceChild(node, element)
-      else
-        @element().appendChild(node)
-
-    if elements.length > index
-      for i in [index..elements.length - 1]
-        elements[i].remove()
-
-    document.cursor.focus()
-
-
   linefeed: (e) =>
     return unless e.which == 13
     e.preventDefault()
