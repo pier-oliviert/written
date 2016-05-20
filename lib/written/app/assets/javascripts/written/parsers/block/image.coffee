@@ -18,7 +18,7 @@ class Image
     rendered.querySelector('img').src == img.src
 
   markdown: =>
-    figure = "<figure><div contenteditable='false'><input type='file' /><img/></div><figcaption /></figure>".toHTML()
+    figure = "<figure><div contenteditable='false'><img/></div><figcaption /></figure>".toHTML()
     caption = figure.querySelector('figcaption')
     container = figure.querySelector('div')
 

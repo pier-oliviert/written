@@ -38,7 +38,8 @@ class @Written
     document.cursor = cursor
 
     
-    document.applyTo(@element())
+    @render(document)
+
     document.cursor.focus(document.toString().length)
 
     @history = new Written.History(document)
@@ -54,7 +55,7 @@ class @Written
   changeTo: (text) =>
     document = new Written.Document(text, @parsers)
     @history.push(document)
-    document.applyTo(@element())
+    @render(document)
 
   changed: (e) =>
     oldDocument = @history.current
@@ -63,8 +64,9 @@ class @Written
     if @element().children.length > 0 && oldDocument.toString().localeCompare(newDocument.toString()) == 0
       return
 
-    newDocument.applyTo(@element())
     @history.push(newDocument)
+    @render(newDocument)
+
     @dispatch('written:changed', document: newDocument)
 
   cursor: =>
@@ -97,9 +99,13 @@ class @Written
       if cursor.offset < document.toString().length
         cursor.offset += 1
 
-      document.applyTo(@element())
+      @render(document)
       @history.push(document)
 
+
+  render: (document) =>
+    document.applyTo(@element())
+    Written.Attachments.attach(this)
 
   undo: (e) =>
     if e.code == 'KeyZ' && e.metaKey && !e.shiftKey
@@ -110,7 +116,7 @@ class @Written
 
     if document = @history.previous()
       @history.current = document
-      document.applyTo(@element())
+      @render(document)
 
   redo: (e) =>
     if e.code == 'KeyZ' && e.metaKey && e.shiftKey
@@ -121,7 +127,7 @@ class @Written
 
     if document = @history.next()
       @history.current = document
-      @history.current.applyTo(@element())
+      @render(@history.current)
 
   toString: =>
     texts = []
