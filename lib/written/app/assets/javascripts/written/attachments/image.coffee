@@ -6,7 +6,7 @@ class Image extends Written.Attachments.Base
     @node.querySelector('img').addEventListener 'click', @select.bind(this, @node)
 
   template: ->
-    "<div id='WrittenOverlay' contenteditable=false>
+    Written.toHTML("<div id='WrittenOverlay' contenteditable=false>
         <div id='WrittenDialog'>
           <header>
             <div class='progress'></div>
@@ -19,7 +19,7 @@ class Image extends Written.Attachments.Base
           </figure>
         </div>
       </div>
-      ".toHTML()
+      ")
 
   select: (node) =>
     @selection = @getSelection()
@@ -65,12 +65,12 @@ class Image extends Written.Attachments.Base
     dialog.classList.add 'failed'
     dialog.querySelector('h3').textContent = "Failed"
     dialog.querySelector('figure').remove()
-    dialog.appendChild("
+    dialog.appendChild(Written.toHTML("
       <section>
         <p>An error occured while trying to process your image.</p>
         <button>Close</button>
       </section>
-    ".toHTML())
+    "))
     dialog.querySelector('button').addEventListener('click', @cancel)
 
   upload: (e) =>
