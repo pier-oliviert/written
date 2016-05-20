@@ -1,9 +1,10 @@
-String::toHTML = ->
+Written.toHTML = (text) ->
   el = document.createElement('div')
-  el.innerHTML = this
+  el.innerHTML = text
   if el.children.length > 1
     el.children
   else
     el.children[0]
+
 
 

@@ -17,14 +17,14 @@ class Image
     rendered.querySelector('figcaption').outerHTML == figcaption.outerHTML &&
     rendered.querySelector('img').src == img.src
 
-  markdown: =>
-    figure = "<figure><div contenteditable='false'><img/></div><figcaption /></figure>".toHTML()
+  toEditor: =>
+    figure = Written.toHTML("<figure><div contenteditable='false'><img/></div><figcaption /></figure>")
     caption = figure.querySelector('figcaption')
     container = figure.querySelector('div')
 
     for text in @content
-      if text.markdown?
-        caption.appendChild(text.markdown())
+      if text.toEditor?
+        caption.appendChild(text.toEditor())
       else
         caption.appendChild(document.createTextNode(text))
 
@@ -34,25 +34,22 @@ class Image
 
     img = figure.querySelector('img')
     if @match[4]?
-      img.src = img.dataset.image = @match[4]
+      img.src = @match[4]
     else
       img.src = '/assets/written/placeholder.png'
 
-    if @configure?
-      @configure(figure)
-
     figure
 
-  html: ->
-    figure = "<figure><div><img/></div><figcaption /></figure>".toHTML()
+  toHTML: ->
+    figure = Written.toHTML("<figure><img/><figcaption /></figure>")
     img = figure.querySelector('img')
     caption = figure.querySelector('figcaption')
 
     img.src = @match[4]
 
     for text in @content
-      if text.html?
-        caption.appendChild(text.html())
+      if text.toHTML?
+        caption.appendChild(text.toHTML())
       else
         caption.appendChild(document.createTextNode(text))
 
@@ -62,33 +59,11 @@ class Image
     img.src = '/assets/written/placeholder.png'
     img.onerror = undefined
 
-Image.rule = /^(!{1}\[([^\]]*)\])(\(([^\s]*)?\))$/i
-
-Image.uploader = (uploader) ->
-  Image::configure = uploader.initialize
-
-
 Written.Parsers.register {
   parser: Image
   node: 'figure'
   type: 'block'
-  getRange: (node, offset, walker) ->
-    range = document.createRange()
-
-    if !node.firstChild?
-      range.setStart(this, 0)
-    else
-      while walker.nextNode()
-        if walker.currentNode.length < offset
-          offset -= walker.currentNode.length
-          continue
-
-        range.setStart(walker.currentNode, offset)
-        break
-
-    range.collapse(true)
-    range
-
+  rule: /^(!{1}\[([^\]]*)\])(\(([^\s]*)?\))$/i
   toString: (node) ->
     (node.querySelector('figcaption') || node).textContent
 }

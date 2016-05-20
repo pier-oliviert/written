@@ -1,4 +1,4 @@
-#= require ../parsers/parsers
+#= require ./parsers
 
 class Written.Document
   constructor: (text, parsers) ->
@@ -20,7 +20,7 @@ class Written.Document
     text = ''
 
     @blocks.forEach (node) ->
-      text += node.html().outerHTML + "\n"
+      text += node.toHTML().outerHTML + "\n"
 
     text
 
@@ -40,7 +40,7 @@ class Written.Document
     @cursor.focus()
 
   findNodeFor: (block, remaining) ->
-    node = block.markdown()
+    node = block.toEditor()
 
     found = remaining.find (existing) ->
       block.equals(existing, node)

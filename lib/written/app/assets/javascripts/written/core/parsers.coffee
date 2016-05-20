@@ -17,10 +17,11 @@
       raise 'error: Written.Parsers can either be "block" or "inline"'
       return
 
+    @normalize(struct)
     if struct.default
-      type.default = struct.parser
+      type.default = struct
     else
-      type.push struct.parser
+      type.push struct
 
     @nodes[struct.node] = struct
 
@@ -49,11 +50,11 @@
     matches = []
     index = 0
 
-    for p in parsers
-      p.rule.lastIndex = 0
+    for struct in parsers
+      struct.rule.lastIndex = 0
 
-      while match = p.rule.exec(text)
-        parser = new p(match)
+      while match = struct.rule.exec(text)
+        parser = new struct.parser(match)
         matches[parser.index()] = parser
 
     while text[index]?
@@ -71,11 +72,34 @@
 
     content
 
+  normalize: (struct) ->
+    if !struct.getRange
+      struct.getRange = (node, offset, walker) ->
+        range = document.createRange()
+
+        if !node.firstChild?
+          range.setStart(node, 0)
+        else
+          while walker.nextNode()
+            if walker.currentNode.length < offset
+              offset -= walker.currentNode.length
+              continue
+
+            range.setStart(walker.currentNode, offset)
+            break
+
+        range.collapse(true)
+        range
+
+    if !struct.toString?
+      struct.toString = (node) ->
+        node.textContent
+
   find: (parsers, str) ->
     parser = undefined
-    for p in parsers
-      if match = p.rule.exec(str)
-        parser = new p(match)
+    for struct in parsers
+      if match = struct.rule.exec(str)
+        parser = new struct.parser(match)
         break
 
     return parser

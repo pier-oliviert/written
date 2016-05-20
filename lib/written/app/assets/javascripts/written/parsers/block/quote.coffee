@@ -1,3 +1,4 @@
+RULE = /^(>\s)(.*)/i
 class Quote
   multiline: true
 
@@ -6,10 +7,10 @@ class Quote
     @opened = true
 
   accepts: (text) ->
-    @opened = Quote.rule.test(text)
+    @opened = RULE.test(text)
 
   append: (text) ->
-    @matches.push(Quote.rule.exec(text))
+    @matches.push(RULE.exec(text))
 
   raw: ->
     lines = @matches.map (match) ->
@@ -26,15 +27,15 @@ class Quote
   equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
-  markdown: =>
-    node = "<blockquote></blockquote>".toHTML()
+  toEditor: =>
+    node = Written.toHTML("<blockquote></blockquote>")
     for line, index in @content
-      p = "<p>".toHTML()
+      p = Written.toHTML("<p>")
       p.appendChild(document.createTextNode(@matches[index][1]))
 
       for text in line
-        if text.markdown?
-          p.appendChild(text.markdown())
+        if text.toEditor?
+          p.appendChild(text.toEditor())
         else
           p.appendChild(document.createTextNode(text.toString()))
 
@@ -44,14 +45,14 @@ class Quote
 
     node
 
-  html: =>
-    node = "<blockquote></blockquote>".toHTML()
+  toHTML: =>
+    node = Written.toHTML("<blockquote></blockquote>")
     for line, index in @content
-      p = "<p>".toHTML()
+      p = Written.toHTML("<p>")
 
       for text in line
-        if text.html?
-          p.appendChild(text.html())
+        if text.toHTML?
+          p.appendChild(text.toHTML())
         else
           p.appendChild(document.createTextNode(text.toString()))
 
@@ -61,31 +62,10 @@ class Quote
 
     node
 
-
-Quote.rule = /^(>\s)(.*)/i
 
 Written.Parsers.register {
   parser: Quote
   node: 'blockquote'
   type: 'block'
-  getRange: (node, offset, walker) ->
-    range = document.createRange()
-
-    if !node.firstChild?
-      range.setStart(this, 0)
-    else
-      while walker.nextNode()
-        if walker.currentNode.length < offset
-          offset -= walker.currentNode.length
-          continue
-
-        range.setStart(walker.currentNode, offset)
-        break
-
-    range.collapse(true)
-    range
-
-  toString: (node) ->
-    node.textContent
-
+  rule: RULE
 }

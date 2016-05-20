@@ -30,8 +30,8 @@ class Code
   equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
-  markdown: =>
-    node = "<pre><code></code></pre>".toHTML()
+  toEditor: =>
+    node = Written.toHTML("<pre><code></code></pre>")
     code = node.querySelector('code')
 
     if @matches[0][3]?
@@ -47,8 +47,8 @@ class Code
 
     node
 
-  html: =>
-    node = "<pre><code></code></pre>".toHTML()
+  toHTML: =>
+    node = Written.toHTML("<pre><code></code></pre>")
     code = node.querySelector('code')
 
     if @matches[0][3]?
@@ -61,29 +61,11 @@ class Code
 
     node
 
-Code.rule = /^((~{3})([a-z]+)?)(?:\s(.*))?/i
-
 Written.Parsers.register {
   parser: Code
   node: 'pre'
   type: 'block'
-  getRange: (node, offset, walker) ->
-    range = document.createRange()
-
-    if !node.firstChild?
-      range.setStart(node, 0)
-    else
-      while walker.nextNode()
-        if walker.currentNode.length < offset
-          offset -= walker.currentNode.length
-          continue
-
-        range.setStart(walker.currentNode, offset)
-        break
-
-    range.collapse(true)
-    range
-
+  rule: /^((~{3})([a-z]+)?)(?:\s(.*))?/i
   toString: (node) ->
     if node.textContent[node.textContent.length - 1] == '\n'
       node.textContent.substr(0, node.textContent.length - 1)

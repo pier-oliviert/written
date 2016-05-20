@@ -1,3 +1,5 @@
+RULE = /^(\d+\.\s)(.*)/i
+
 class OList
   multiline: true
 
@@ -6,12 +8,12 @@ class OList
     @opened = true
 
   accepts: (text) ->
-    @opened = OList.rule.test(text)
+    @opened = RULE.test(text)
 
     @opened
 
   append: (text) ->
-    @matches.push(OList.rule.exec(text))
+    @matches.push(RULE.exec(text))
 
   equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
@@ -28,15 +30,15 @@ class OList
 
     texts.join('\n')
 
-  markdown: =>
-    node = "<ol></ol>".toHTML()
+  toEditor: =>
+    node = Written.toHTML("<ol></ol>")
     for line, index in @content
-      li = "<li>".toHTML()
+      li = Written.toHTML("<li>")
       li.appendChild(document.createTextNode(@matches[index][1]))
 
       for text in line
-        if text.markdown?
-          li.appendChild(text.markdown())
+        if text.toEditor?
+          li.appendChild(text.toEditor())
         else
           li.appendChild(document.createTextNode(text.toString()))
 
@@ -44,14 +46,14 @@ class OList
 
     node
 
-  html: =>
-    node = "<ol></ol>".toHTML()
+  toHTML: =>
+    node = Written.toHTML("<ol></ol>")
     for line, index in @content
-      li = "<li>".toHTML()
+      li = Written.toHTML("<li>")
 
       for text in line
-        if text.html?
-          li.appendChild(text.html())
+        if text.toHTML?
+          li.appendChild(text.toHTML())
         else
           li.appendChild(document.createTextNode(text.toString()))
 
@@ -59,13 +61,12 @@ class OList
 
     node
 
-
-OList.rule = /^(\d+\.\s)(.*)/i
 
 Written.Parsers.register {
   parser: OList
   node: 'ol'
   type: 'block'
+  rule: RULE
   getRange: (node, offset, walker) ->
     range = document.createRange()
     if !node.firstChild?

@@ -13,53 +13,32 @@ class Paragraph
   raw: =>
     @match[0]
 
-  markdown: =>
-    node = "<p>".toHTML()
+  toEditor: =>
+    node = Written.toHTML("<p>")
     for text in @content
-      if text.markdown?
-        node.appendChild(text.markdown())
+      if text.toEditor?
+        node.appendChild(text.toEditor())
       else
         node.appendChild(document.createTextNode(text))
 
     node
 
-  html: =>
-    node = "<p>".toHTML()
+  toHTML: =>
+    node = Written.toHTML("<p>")
     for text in @content
-      if text.html?
-        node.appendChild(text.html())
+      if text.toHTML?
+        node.appendChild(text.toHTML())
       else
         node.appendChild(document.createTextNode(text))
 
     node
 
 
-
-Paragraph.rule = /.*/i
 
 Written.Parsers.register {
   parser: Paragraph
   node: 'p'
   type: 'block'
+  rule: /.*/i
   default: true
-  getRange: (node, offset, walker) ->
-    range = document.createRange()
-
-    if !node.firstChild?
-      range.setStart(node, 0)
-    else
-      while walker.nextNode()
-        if walker.currentNode.length < offset
-          offset -= walker.currentNode.length
-          continue
-
-        range.setStart(walker.currentNode, offset)
-        break
-
-    range.collapse(true)
-    range
-
-  toString: (node) ->
-    node.textContent
-
 }

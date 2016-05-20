@@ -1,3 +1,5 @@
+RULE = /^(-\s)(.*)/i
+
 class UList
   multiline: true
 
@@ -5,7 +7,7 @@ class UList
     @matches = [match]
 
   accepts: (text) ->
-    @opened = UList.rule.test(text)
+    @opened = RULE.test(text)
 
     @opened
 
@@ -22,20 +24,20 @@ class UList
     texts.join('\n')
 
   append: (text) ->
-    @matches.push(UList.rule.exec(text))
+    @matches.push(RULE.exec(text))
 
   equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
-  markdown: =>
-    node = "<ul></ul>".toHTML()
+  toEditor: =>
+    node = Written.toHTML("<ul></ul>")
     for line, index in @content
-      li = "<li>".toHTML()
+      li = Written.toHTML("<li>")
       li.appendChild(document.createTextNode(@matches[index][1]))
 
       for text in line
-        if text.markdown?
-          li.appendChild(text.markdown())
+        if text.toEditor?
+          li.appendChild(text.toEditor())
         else
           li.appendChild(document.createTextNode(text.toString()))
 
@@ -43,27 +45,26 @@ class UList
 
     node
 
-  html: =>
-    node = "<ul></ul>".toHTML()
+  toHTML: =>
+    node = Written.toHTML("<ul></ul>")
     for line, index in @content
-      li = "<li>".toHTML()
+      li = Written.toHTML("<li>")
 
       for text in line
-        if text.html?
-          li.appendChild(text.html())
+        if text.toHTML?
+          li.appendChild(text.toHTML())
         else
           li.appendChild(document.createTextNode(text.toString()))
 
       node.appendChild(li)
 
     node
-
-UList.rule = /^(-\s)(.*)/i
 
 Written.Parsers.register {
   parser: UList
   node: 'ul'
   type: 'block'
+  rule: RULE
   getRange: (node, offset, walker) ->
     range = document.createRange()
     if !node.firstChild?
