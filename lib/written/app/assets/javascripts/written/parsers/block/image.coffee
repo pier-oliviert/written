@@ -4,10 +4,10 @@ class Image
   constructor: (match) ->
     @match = match
 
-  raw: ->
+  outerText: ->
     @match[0]
 
-  text: ->
+  innerText: ->
     @match[2]
 
   equals: (current, rendered) ->

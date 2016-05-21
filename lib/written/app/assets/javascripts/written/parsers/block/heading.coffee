@@ -7,10 +7,10 @@ class Header
   equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
-  text: ->
+  innerText: ->
     @match[3]
 
-  raw: ->
+  outerText: ->
     @match[0]
 
   toEditor: =>

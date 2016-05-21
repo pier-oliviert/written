@@ -5,12 +5,12 @@ class Written.Document
     @blocks = parsers.parse(parsers.blocks, text)
 
     @blocks.forEach (block) =>
-      if block.text?
+      if block.innerText?
         if block.multiline
-          block.content = block.text().split('\n').map (text) ->
+          block.content = block.innerText().split('\n').map (text) ->
             parsers.parse(parsers.inlines, text)
         else
-          block.content = parsers.parse(parsers.inlines, block.text())
+          block.content = parsers.parse(parsers.inlines, block.innerText())
 
   freeze: =>
     Object.freeze(@blocks)
@@ -52,7 +52,7 @@ class Written.Document
       return @toString.cache
 
     texts = @blocks.map (block) ->
-      block.raw()
+      block.outerText()
 
     texts.join('\n')
 

@@ -11,13 +11,13 @@ class UList
 
     @opened
 
-  raw: ->
+  outerText: ->
     texts = @matches.map (match) ->
       match[0]
 
     texts.join('\n')
 
-  text: ->
+  innerText: ->
     texts = @matches.map (match) ->
       match[2]
 

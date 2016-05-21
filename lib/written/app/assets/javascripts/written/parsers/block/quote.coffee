@@ -12,13 +12,13 @@ class Quote
   append: (text) ->
     @matches.push(RULE.exec(text))
 
-  raw: ->
+  outerText: ->
     lines = @matches.map (match) ->
       match[0]
 
     lines.join('\n')
 
-  text: =>
+  innerText: =>
     lines = @matches.map (match) ->
       match[2]
 

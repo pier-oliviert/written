@@ -7,7 +7,7 @@ class Code
     @opened = true
 
 
-  raw: ->
+  outerText: ->
     texts = @matches.map (m) ->
       m[0]
     texts.join('\n')

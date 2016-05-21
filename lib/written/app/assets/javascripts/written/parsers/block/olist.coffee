@@ -18,17 +18,18 @@ class OList
   equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
-  raw: ->
+  innerText: ->
+    texts = @matches.map (match) ->
+      match[2]
+
+    texts.join('\n')
+
+  outerText: ->
     texts = @matches.map (match) ->
       match[0]
 
     texts.join('\n')
 
-  text: ->
-    texts = @matches.map (match) ->
-      match[2]
-
-    texts.join('\n')
 
   toEditor: =>
     node = Written.toHTML("<ol></ol>")

@@ -7,10 +7,10 @@ class Paragraph
   equals: (current, rendered) ->
     current.outerHTML == rendered.outerHTML
 
-  text: =>
+  innerText: =>
     @match[0]
 
-  raw: =>
+  outerText: =>
     @match[0]
 
   toEditor: =>
