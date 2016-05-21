@@ -91,7 +91,7 @@
         range.collapse(true)
         range
 
-    if !struct.toString?
+    if Object.prototype.toString == struct.toString
       struct.toString = (node) ->
         node.textContent
 
