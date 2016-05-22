@@ -1,4 +1,4 @@
-class Italic
+class Italic extends Written.Parsers.Inline
   constructor: (match) ->
     @match = match
 

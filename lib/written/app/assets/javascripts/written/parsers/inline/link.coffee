@@ -1,4 +1,4 @@
-class Link
+class Link extends Written.Parsers.Inline
   constructor: (match) ->
     @match = match
 

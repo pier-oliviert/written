@@ -1,4 +1,4 @@
-class Header
+class Header extends Written.Parsers.Block
   multiline: false
 
   constructor: (match) ->

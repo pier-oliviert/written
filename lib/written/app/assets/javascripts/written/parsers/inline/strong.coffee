@@ -1,4 +1,4 @@
-class Strong
+class Strong extends Written.Parsers.Inline
   constructor: (match) ->
     @match = match
 

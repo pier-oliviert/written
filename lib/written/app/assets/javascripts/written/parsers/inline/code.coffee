@@ -1,4 +1,4 @@
-class Code
+class Code extends Written.Parsers.Inline
   constructor: (match) ->
     @match = match
 

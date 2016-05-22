@@ -1,4 +1,4 @@
-class Code
+class Code extends Written.Parsers.Block
   multiline: true
 
   constructor: (match) ->

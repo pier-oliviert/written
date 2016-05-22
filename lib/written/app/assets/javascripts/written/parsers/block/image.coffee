@@ -1,4 +1,4 @@
-class Image
+class Image extends Written.Parsers.Block
   multiline: false
 
   constructor: (match) ->

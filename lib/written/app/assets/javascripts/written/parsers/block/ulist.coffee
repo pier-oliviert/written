@@ -1,6 +1,6 @@
 RULE = /^(-\s)(.*)/i
 
-class UList
+class UList extends Written.Parsers.Block
   multiline: true
 
   constructor: (match) ->

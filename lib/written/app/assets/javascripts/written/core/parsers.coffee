@@ -117,3 +117,29 @@
     else
       node.textContent
 
+
+class Written.Parsers.Block
+  outerText: ->
+    throw "method implementation: #{this.name}.outerText() is missing."
+
+  equals: ->
+    throw "method implementation: #{this.name}.equals(current, rendered) is missing."
+
+  toEditor: ->
+    throw "method implementation: #{this.name}.toEditor() is missing."
+
+  toHTML: ->
+    throw "method implementation: #{this.name}.toHTML() is missing."
+
+class Written.Parsers.Inline
+  index: ->
+    throw "method implementation: #{this.name}.index() is missing."
+
+  length: ->
+    throw "method implementation: #{this.name}.length() is missing."
+
+  toEditor: ->
+    throw "method implementation: #{this.name}.toEditor() is missing."
+
+  toHTML: ->
+    throw "method implementation: #{this.name}.toHTML() is missing."

@@ -1,5 +1,5 @@
 RULE = /^(>\s)(.*)/i
-class Quote
+class Quote extends Written.Parsers.Block
   multiline: true
 
   constructor: (match) ->

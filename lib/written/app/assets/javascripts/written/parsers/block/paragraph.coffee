@@ -1,4 +1,4 @@
-class Paragraph
+class Paragraph extends Written.Parsers.Block
   multiline: false
 
   constructor: (match) ->
