@@ -137,5 +137,3 @@ class @Written
 
     texts.join '\n'
 
-
-Written.Uploaders = {}
