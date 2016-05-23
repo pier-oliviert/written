@@ -2,3 +2,4 @@
 tmp/
 secrets.*
 *.log
+node_modules
