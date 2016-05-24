@@ -9,8 +9,8 @@ window.Written = {
   }
 }
 
-require('../../../lib/written/app/assets/javascripts/written/core/html')
-require('../../../lib/written/app/assets/javascripts/written/parsers/block/code')
+require('../../../../lib/written/app/assets/javascripts/written/core/html')
+require('../../../../lib/written/app/assets/javascripts/written/parsers/block/code')
 
 describe('code', () => {
   it('detects a match', () => {

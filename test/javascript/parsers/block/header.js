@@ -11,8 +11,8 @@ window.Written = {
   }
 }
 
-require('../../../lib/written/app/assets/javascripts/written/core/html')
-require('../../../lib/written/app/assets/javascripts/written/parsers/block/heading')
+require('../../../../lib/written/app/assets/javascripts/written/core/html')
+require('../../../../lib/written/app/assets/javascripts/written/parsers/block/heading')
 
 describe('header', () => {
   it('detects a match', () => {

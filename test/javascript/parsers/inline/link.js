@@ -9,8 +9,8 @@ window.Written = {
   }
 }
 
-require('../../../lib/written/app/assets/javascripts/written/core/html')
-require('../../../lib/written/app/assets/javascripts/written/parsers/inline/link')
+require('../../../../lib/written/app/assets/javascripts/written/core/html')
+require('../../../../lib/written/app/assets/javascripts/written/parsers/inline/link')
 
 describe('link', () => {
   it('detects a match', () => {

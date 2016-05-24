@@ -15,6 +15,7 @@
     "jest-cli": "^12.1.0"
   },
   "jest": {
+    "testDirectoryName": "test/javascript",
     "scriptPreprocessor": "<rootDir>/compile-coffee",
     "moduleFileExtensions": [
       "coffee",

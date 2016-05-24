@@ -9,8 +9,8 @@ window.Written = {
   }
 }
 
-require('../../../lib/written/app/assets/javascripts/written/core/html')
-require('../../../lib/written/app/assets/javascripts/written/parsers/inline/italic')
+require('../../../../lib/written/app/assets/javascripts/written/core/html')
+require('../../../../lib/written/app/assets/javascripts/written/parsers/inline/italic')
 
 describe('italic', () => {
   it('detects a match', () => {
