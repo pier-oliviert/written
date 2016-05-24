@@ -1,6 +1,6 @@
 {
   "name": "written",
-  "description": "Booking dojo app",
+  "description": "Markdown Editor",
   "version": "0.0.1",
   "private": true,
   "scripts": {
