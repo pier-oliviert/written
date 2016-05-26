@@ -1,3 +1,57 @@
 html, body {
   background: #B5C2D6;
 }
+
+header {
+  text-align: center;
+}
+
+header > h1 {
+  font-family: Dancing Script;
+  font-size: 5em;
+  color: white;
+}
+
+main {
+  color: #4E5358;
+  outline: none;
+
+  min-height: 600px;
+
+  max-width: 900px;
+  width: 80%;
+  min-width: 300px;
+
+  font-family: Open Sans;
+  margin: 0 auto;
+  
+  background: white;
+  box-shadow: 0 1px 5px #858B94;
+}
+
+main {
+  line-height: 1.5em;
+}
+
+main h1,
+main h2,
+main h3,
+main h4,
+main h5,
+main h6 {
+  font-family: Lora;
+  margin: 1.8em 0 1em 0;
+}
+
+main p {
+  margin: 1em 0;
+}
+
+
+main pre {
+  font-size: 0.8em;
+}
+
+main :not(pre) > code[class*="language-"] {
+  font-size: 0.9em;
+}

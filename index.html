@@ -1,20 +1,59 @@
 <!dOCTYPE html>
 <html>
   <head>
+      <link rel='stylesheet' href='/written.css' />
+      <script src='/written.js'></script>
+
+      <link rel='stylesheet' href='/prism.css' />
+      <script src='/prism.js'></script>
+
+      <link rel='stylesheet' href='/main.css' />
   </head>
   <body>
 
     <header>
+      <h1>Written</h1>
     </header>
 
-    <main>
-    </main>
+    <main>Written is the editor you _need_ if you wish to have a *standalone, customizeable, live markdown editor* on your site. Using technologies like Mutation Observers, Written was built to be supported by all evergreen browsers.
+This editor is build around 3 concepts:
+1. Documents
+2. Parsers
+3. Attachments
+Those concepts are bound together through the core of Written which handles the boilerplate algorithms and event handling like undo/redo, keystroke inputs, copy/paste, etc.
+Here's a description of the 3 concepts and how they work to make this editor works the way it does:
+## Documents
+Documents are basically immutable objects that store a sort of abstract tree of the content as well as the cursor position. With that data, a text is built and rendered on the page.
+On each keystroke, a new document is created. Then, the document looks at the DOM and through a _diffing_ algorithm, it efficiently changes the DOM so that the editor renders the document as it should be.
+Every documents created are pushed on top of the history tree so the core can come back to it in case a user needs to come back to a previous version. This is how the undo/redo functionality is implemented.
+## Parsers
+Parsers are split into two categories: *block* and *inline* parsers. Before this point, the editor is pretty much language agnostic. It could be implemented to parse any kind of content. By default, the parsers are built to parse Markdown, or a version of it.
+### Block parsers
+The block parsers have options that can help customize their behaviour. Some of them may want to grab only 1 line of text, like headers, and some other might need be configured to support multiline support, like the ordered list above.
+Also, block parsers could want from the editor _not_ to parse their inner content. One such case would be a code block parser where the content of the code snippet requires to be kept intact (and code highlighted, maybe?).
+### Inline parsers
+Inline parsers are much more straightforward, they are triggered on some rules and change their content to something else. Think of all the words here that are either bold, italic. These are inline parsers.
+### Enable a subset of the available parsers
+Written was built to be able to either remove or create new parsers for you to use. While the inner API already works to support that, the public API is not yet finished and so this section will explain how to do it when it's ready.
+## Attachments
+Attachments are useful when you want the editor to give you control for a short period of time to do something that would fall outside the scope of the editor.
+One example of that, would be the image upload to AWS builtin with Written. While there is an image parser that is builtin within Written, the job of uploading a new image to AWS and update the text content to include that new images falls outside the job of a text editor. An attachment was created to support all those features.
+The attachments are special as they are bound to DOM nodes. You tell the Written to what kind of node you want the attachment to be bound to and Written will instantiate a new instance on every node that it finds.
+It can also take control of the user's input for the time the attachment needs control. With the image upload example, the attachment takes control during the upload process and once completed, update the text content of the node is bound to and then relinquish its control over to the Editor.
+This way, the editor can keep track of the changes before and after the attachment took control.
+## Add Written to your project
+~~~javascript
+editor = new Written(el)
+editor.initialize()
+~~~
+## A final note
+This text is entirely editable. You can edit it to your liking to test the different feature Written supports.
+Enjoy :)</main>
 
     <footer>
-      <link rel='stylesheet' href='/written.css' />
-      <script src='/written.js'></script>
-
-      <link rel='stylesheet' href='/main.css' />
+      <link href='https://fonts.googleapis.com/css?family=Dancing+Script' rel='stylesheet' type='text/css'>
+      <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,400italic' rel='stylesheet' type='text/css'>
+      <link href='https://fonts.googleapis.com/css?family=Lora:700,700italic' rel='stylesheet' type='text/css'>
       <script src='/main.js'></script>
     </footer>
   </body>
