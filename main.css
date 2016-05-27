@@ -22,6 +22,7 @@ main {
   box-shadow: 0 1px 5px #858B94;
 
   margin: 0 auto;
+  font-family: Open Sans;
 }
 
 main > nav {
@@ -62,7 +63,6 @@ main > nav > a:last-child {
 
 #Editor {
   outline: none;
-  font-family: Open Sans;
 }
 
 #Editor {
