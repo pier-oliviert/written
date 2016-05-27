@@ -785,7 +785,7 @@
 
     Code.prototype.append = function(text) {
       var match;
-      match = /(~{3})$/i.exec(text);
+      match = /^(~{3})$/i.exec(text);
       if (match != null) {
         this.matches.push(match);
         this.opened = false;
