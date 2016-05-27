@@ -828,7 +828,7 @@
       if (this.matches[0][4] != null) {
         code.insertAdjacentHTML('beforebegin', "<header>" + this.matches[0][4] + "</header>");
       }
-      code.appendChild(document.createTextNode(this.content));
+      code.appendChild(document.createTextNode(this.content.slice(1, -1)));
       return node;
     };
 
