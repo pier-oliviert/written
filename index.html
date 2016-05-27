@@ -22,7 +22,36 @@
         <a href='javascript:void(0);'>Rendered</a>
       </nav>
       <section id='Rendered'></section>
-      <section id='Editor'>Written is the editor you _need_ if you wish to have a *standalone, customizeable, live markdown editor* on your site. Using technologies like Mutation Observers, Written was built to be supported by all evergreen browsers.
+      <section id='Editor'>Written is the editor you _need_ if you wish to have a *standalone, customizeable, live markdown editor* on your site. Markdown comes in different flavor, for that reason, you might want to have a look at [the list of markdown parsers enabled by default with Written](markdown.html). By default, Written supports the following syntax:
+- Headers;
+- Unordered lists;
+- Ordered lists;
+- Quotes;
+- Block-level and inline code snippets (The code highlighting is done by third party like [Prism.js](http://prismjs.com/download.html));
+- Images;
+- Links;
+- Strong words;
+- Italic words;
+To get started with Written, you just need to add the standalone file to your project and initialize your editor.
+~~~javascript main.js
+editor = new Written(el)
+editor.initialize()
+~~~
+For Written to work as expected, you *need to include the CSS file that comes with it*. The content of the editor can be retrieve manually or it can update automatically an input field that is determined in advance.
+### Manually get the content of the editor
+~~~javascript
+document.querySelector('#Editor').instance.history.current.toHTMLString()
+~~~
+### Configure Written to update an input field
+~~~javascript main.js
+editor = new Written(el, {
+onChange: document.querySelector("input[type='text']")
+})
+editor.initialize()
+~~~
+The ~~~javascript onChange~~~ attribute can either be a DOM element or a function. See the API for more information.
+## Under the hood
+Using technologies like Mutation Observers, Written was built to be supported by all evergreen browsers.
 This editor is build around 3 concepts:
 1. Documents
 2. Parsers
@@ -55,7 +84,7 @@ editor.initialize()
 ~~~
 ## A final note
 This text is entirely editable. You can edit it to your liking to test the different feature Written supports.
-Enjoy :)</section>
+Enjoy :)"</section>
     </main>
 
     <footer>

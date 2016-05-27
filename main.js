@@ -37,12 +37,12 @@ toggles[1].addEventListener('click', function(e) {
 Editor.addEventListener('written:changed', function() {
   Rendered.innerHTML = written.history.current.toHTMLString()
   Array.prototype.slice.call(Rendered.querySelectorAll('code')).forEach(function(code) {
-    Prism.highlightElement(code, true)
+    Prism.highlightElement(code, false)
   })
 })
 
 Rendered.innerHTML = written.history.current.toHTMLString()
 Array.prototype.slice.call(Rendered.querySelectorAll('code')).forEach(function(code) {
-    Prism.highlightElement(code, true)
+    Prism.highlightElement(code, false)
   })
 Rendered.remove()
