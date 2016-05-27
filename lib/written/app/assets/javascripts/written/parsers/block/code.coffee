@@ -57,7 +57,7 @@ class Code extends Written.Parsers.Block
     if @matches[0][4]?
       code.insertAdjacentHTML('beforebegin', "<header>#{@matches[0][4]}</header>")
 
-    code.appendChild(document.createTextNode(@content))
+    code.appendChild(document.createTextNode(@content.slice(1, -1)))
 
     node
 
