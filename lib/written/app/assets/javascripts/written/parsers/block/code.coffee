@@ -16,7 +16,7 @@ class Code extends Written.Parsers.Block
     @opened
 
   append: (text) ->
-    match = /(~{3})$/i.exec(text)
+    match = /^(~{3})$/i.exec(text)
     if match?
       @matches.push(match)
       @opened = false
