@@ -14,45 +14,103 @@ header > h1 {
 
 main {
   color: #4E5358;
-  outline: none;
-
   min-height: 600px;
-
   max-width: 900px;
   width: 80%;
   min-width: 300px;
-
-  font-family: Open Sans;
-  margin: 0 auto;
-  
   background: white;
   box-shadow: 0 1px 5px #858B94;
+
+  margin: 0 auto;
 }
 
-main {
+main > nav {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1em 2em;
+  text-align: right;
+}
+
+main > nav > a {
+  padding: 0.3em 0.7em;
+  color: #B5C2D6;
+  font-size: 0.7em;
+  text-transform: uppercase;
+  font-weight: bolder;
+  font-family: Open Sans;
+  border: 1px solid #B5C2D6;
+  text-decoration: none;
+}
+
+main > nav > a[data-selected] {
+  background: #B5C2D6;
+  color: white;
+}
+
+main > nav > a:hover:not([data-selected]) {
+  background: #E4E9F1;
+}
+
+main > nav > a:first-child {
+  border-radius: 0.3em 0 0 0.3em;
+  border-right: none;
+}
+
+main > nav > a:last-child {
+  border-radius: 0 0.3em 0.3em 0;
+}
+
+#Editor {
+  outline: none;
+  font-family: Open Sans;
+}
+
+#Editor {
   line-height: 1.5em;
 }
 
-main h1,
-main h2,
-main h3,
-main h4,
-main h5,
-main h6 {
+#Editor h1,
+#Editor h2,
+#Editor h3,
+#Editor h4,
+#Editor h5,
+#Editor h6 {
   font-family: Lora;
   line-height: 1em;
   margin: 1.8em 0 1em 0;
 }
 
-main p {
+#Editor p {
   margin: 1em 0;
 }
 
 
-main pre {
+#Editor pre {
   font-size: 0.8em;
 }
 
-main :not(pre) > code[class*="language-"] {
+#Editor :not(pre) > code[class*="language-"] {
   font-size: 0.9em;
+}
+
+#Rendered {
+  padding: 1em;
+}
+
+#Rendered pre {
+  padding: 0;
+}
+
+#Rendered pre > header {
+  padding: 0.3em 0.8em;
+  font-size: 0.8em;
+  font-style: italic;
+  background: rgba(255,255,255,0.2);
+  border-bottom: 1px solid rgba(200,200,200,0.3);
+  text-shadow: none;
+}
+
+#Rendered pre > code {
+  display: block;
+  padding: 0.3em 0.8em;
 }
