@@ -13,9 +13,7 @@ var main = document.querySelector('main')
 var Editor = document.querySelector('#Editor')
 var Rendered = document.querySelector('#Rendered')
 var toggles = Array.prototype.slice.call(document.querySelectorAll('nav > a'))
-var written = new Written(Editor)
-
-written.initialize()
+var written = new Written(Editor, {parsers: parsers})
 
 toggles[0].addEventListener('click', function(e) {
   if (Editor.parentElement == null) {
