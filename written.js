@@ -2,7 +2,11 @@
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   this.Written = (function() {
-    function Written(el) {
+    function Written(el, options) {
+      var cursor, document, parsers, text;
+      if (options == null) {
+        options = {};
+      }
       this.toString = bind(this.toString, this);
       this.redo = bind(this.redo, this);
       this.undo = bind(this.undo, this);
@@ -12,46 +16,38 @@
       this.changed = bind(this.changed, this);
       this.changeTo = bind(this.changeTo, this);
       this.dispatch = bind(this.dispatch, this);
-      var text;
       el.instance = this;
       el.dataset.editor = "written";
       this.element = function() {
         return el;
       };
-      text = this.toString();
-      this.element().textContent = '';
-      this.observer = new Written.Observer(this.element(), this.changed);
-      this.initialize = this.initialize.bind(this, text);
       this.element().addEventListener('dragover', this.over);
       this.element().addEventListener('drop', this.preventDefaults);
       this.element().addEventListener('keypress', this.linefeed);
       this.element().addEventListener('keydown', this.undo);
       this.element().addEventListener('keydown', this.redo);
       this.element().addEventListener('keydown', this.cursor);
+      parsers = options.parsers;
+      if (parsers == null) {
+        parsers = new Written.Parsers.all();
+      }
+      this.parsers = parsers;
+      text = this.toString();
+      this.element().textContent = '';
+      if (this.element().contentEditable !== 'true') {
+        this.element().contentEditable = 'true';
+      }
+      cursor = new Written.Cursor(this.element(), window.getSelection(), this.parsers);
+      document = new Written.Document(text, this.parsers, cursor);
+      this.render(document);
+      document.cursor.focus(document.toString().length);
+      this.history = new Written.History(document);
+      this.observer = new Written.Observer(this.element(), this.changed);
+      this.dispatch('written:initialized');
     }
 
     Written.prototype.preventDefaults = function(e) {
       return e.preventDefault();
-    };
-
-    Written.prototype.initialize = function(text, parsers) {
-      var cursor, document;
-      this.observer.pause();
-      if (parsers == null) {
-        parsers = Written.Parsers;
-      }
-      this.parsers = parsers;
-      if (this.element().contentEditable !== 'true') {
-        this.element().contentEditable = 'true';
-      }
-      document = new Written.Document(text, this.parsers);
-      cursor = new Written.Cursor(this.element(), window.getSelection());
-      document.cursor = cursor;
-      this.render(document);
-      document.cursor.focus(document.toString().length);
-      this.history = new Written.History(document);
-      this.dispatch('written:initialized');
-      return this.observer.resume();
     };
 
     Written.prototype.dispatch = function(name, data) {
@@ -74,10 +70,10 @@
     };
 
     Written.prototype.changed = function(e) {
-      var newDocument, oldDocument;
+      var cursor, newDocument, oldDocument;
       oldDocument = this.history.current;
-      newDocument = new Written.Document(this.toString(), this.parsers);
-      newDocument.cursor = new Written.Cursor(this.element(), window.getSelection());
+      cursor = new Written.Cursor(this.element(), window.getSelection(), this.parsers);
+      newDocument = new Written.Document(this.toString(), this.parsers, cursor);
       if (this.element().children.length > 0 && oldDocument.toString().localeCompare(newDocument.toString()) === 0) {
         return;
       }
@@ -89,7 +85,7 @@
     };
 
     Written.prototype.cursor = function() {
-      return this.history.current.cursor = new Written.Cursor(this.element(), window.getSelection());
+      return this.history.current.cursor = new Written.Cursor(this.element(), window.getSelection(), this.parsers);
     };
 
     Written.prototype.linefeed = function(e) {
@@ -99,7 +95,7 @@
       }
       e.preventDefault();
       e.stopPropagation();
-      cursor = new Written.Cursor(this.element(), window.getSelection());
+      cursor = new Written.Cursor(this.element(), window.getSelection(), this.parsers);
       return this.observer.pause((function(_this) {
         return function() {
           var document, lines, offset;
@@ -118,8 +114,7 @@
             lines.push('');
             cursor.offset += 1;
           }
-          document = new Written.Document(lines.join('\n'), _this.parsers);
-          document.cursor = cursor;
+          document = new Written.Document(lines.join('\n'), _this.parsers, cursor);
           if (cursor.offset < document.toString().length) {
             cursor.offset += 1;
           }
@@ -168,7 +163,7 @@
       ref = this.element().childNodes;
       for (i = 0, len = ref.length; i < len; i++) {
         node = ref[i];
-        content = Written.Parsers.toString(node).split('\n');
+        content = this.parsers.toString(node).split('\n');
         texts.push(content.join('\n'));
       }
       return texts.join('\n');
@@ -260,13 +255,14 @@
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Written.Cursor = (function() {
-    function Cursor(element, selection) {
+    function Cursor(element, selection, parsers) {
       this.focus = bind(this.focus, this);
       var child, children, i, len, node, parent, ref;
       this.element = function() {
         return element;
       };
       this.selection = selection;
+      this.parsers = parsers;
       children = Array.prototype.slice.call(this.element().children, 0);
       this.offset = selection.focusOffset;
       node = selection.focusNode;
@@ -275,7 +271,7 @@
         if (parent) {
           child = node.previousSibling;
           while (child) {
-            this.offset += Written.Parsers.toString(child).length;
+            this.offset += this.parsers.toString(child).length;
             child = child.previousSibling;
           }
           if (node instanceof HTMLLIElement) {
@@ -290,7 +286,7 @@
         if (child === node) {
           break;
         }
-        this.offset += Written.Parsers.toString(child).length;
+        this.offset += this.parsers.toString(child).length;
         this.offset += 1;
       }
       this.currentNode = function() {
@@ -303,7 +299,7 @@
       offset = this.offset;
       element = this.element().firstElementChild;
       while (element && element !== node) {
-        offset -= Written.Parsers.toString(element).length;
+        offset -= this.parsers.toString(element).length;
         element = element.nextElementSibling;
       }
       return offset;
@@ -319,11 +315,11 @@
       if (node === void 0) {
         node = this.element().firstElementChild;
       }
-      while (node.nextElementSibling && Written.Parsers.toString(node).length < offset) {
-        offset -= Written.Parsers.toString(node).length + 1;
+      while (node.nextElementSibling && this.parsers.toString(node).length < offset) {
+        offset -= this.parsers.toString(node).length + 1;
         node = node.nextElementSibling;
       }
-      range = Written.Parsers.getRange(node, Math.min(offset, Written.Parsers.toString(node).length), document.createTreeWalker(node, NodeFilter.SHOW_TEXT));
+      range = this.parsers.getRange(node, Math.min(offset, this.parsers.toString(node).length), document.createTreeWalker(node, NodeFilter.SHOW_TEXT));
       if (this.offsetDiffersBetween(this.selection, range)) {
         this.selection.removeAllRanges();
         this.selection.addRange(range);
@@ -349,40 +345,26 @@
 
 }).call(this);
 (function() {
-  this.Written.Parsers = new ((function() {
-    function _Class() {
-      this.blocks = [];
-      this.inlines = [];
+  this.Written.Parsers = (function() {
+    function Parsers(blocks, inlines) {
+      var i, len, ref, struct;
+      this.blocks = blocks || [Written.Parsers.Blocks["default"]].concat(Written.Parsers.Blocks);
+      this.inlines = inlines || Written.Parsers.Inlines;
       this.nodes = {};
+      ref = this.blocks.concat(this.inlines);
+      for (i = 0, len = ref.length; i < len; i++) {
+        struct = ref[i];
+        this.nodes[struct.node] = struct;
+      }
       this.blocks.parse = this.parseBlocks.bind(this, this.blocks);
       this.inlines.parse = this.parseInlines.bind(this, this.inlines);
     }
 
-    _Class.prototype.register = function(struct) {
-      var type;
-      type = void 0;
-      if (struct.type === 'block') {
-        type = this.blocks;
-      } else if (struct.type === 'inline') {
-        type = this.inlines;
-      } else {
-        raise('error: Written.Parsers can either be "block" or "inline"');
-        return;
-      }
-      this.normalize(struct);
-      if (struct["default"]) {
-        type["default"] = struct;
-      } else {
-        type.push(struct);
-      }
-      return this.nodes[struct.node] = struct;
-    };
-
-    _Class.prototype.parse = function(parsers, text) {
+    Parsers.prototype.parse = function(parsers, text) {
       return parsers.parse(text);
     };
 
-    _Class.prototype.parseBlocks = function(parsers, text) {
+    Parsers.prototype.parseBlocks = function(parsers, text) {
       var block, blocks, line, lines, str;
       parsers = [parsers["default"]].concat(parsers).reverse();
       blocks = [];
@@ -399,7 +381,7 @@
       return blocks;
     };
 
-    _Class.prototype.parseInlines = function(parsers, text) {
+    Parsers.prototype.parseInlines = function(parsers, text) {
       var buffer, content, i, index, len, match, matches, parser, struct;
       buffer = '';
       content = [];
@@ -430,35 +412,7 @@
       return content;
     };
 
-    _Class.prototype.normalize = function(struct) {
-      if (!struct.getRange) {
-        struct.getRange = function(node, offset, walker) {
-          var range;
-          range = document.createRange();
-          if (node.firstChild == null) {
-            range.setStart(node, 0);
-          } else {
-            while (walker.nextNode()) {
-              if (walker.currentNode.length < offset) {
-                offset -= walker.currentNode.length;
-                continue;
-              }
-              range.setStart(walker.currentNode, offset);
-              break;
-            }
-          }
-          range.collapse(true);
-          return range;
-        };
-      }
-      if (Object.prototype.toString === struct.toString) {
-        return struct.toString = function(node) {
-          return node.textContent;
-        };
-      }
-    };
-
-    _Class.prototype.find = function(parsers, str) {
+    Parsers.prototype.find = function(parsers, str) {
       var i, len, match, parser, struct;
       parser = void 0;
       for (i = 0, len = parsers.length; i < len; i++) {
@@ -471,15 +425,15 @@
       return parser;
     };
 
-    _Class.prototype.get = function(name) {
+    Parsers.prototype.get = function(name) {
       return this.nodes[name];
     };
 
-    _Class.prototype.getRange = function(node, offset, walker) {
+    Parsers.prototype.getRange = function(node, offset, walker) {
       return this.nodes[node.nodeName.toLowerCase()].getRange(node, offset, walker);
     };
 
-    _Class.prototype.toString = function(node) {
+    Parsers.prototype.toString = function(node) {
       var struct;
       struct = this.nodes[node.nodeName.toLowerCase()];
       if (struct != null) {
@@ -489,9 +443,90 @@
       }
     };
 
-    return _Class;
+    return Parsers;
 
-  })());
+  })();
+
+  Written.Parsers.Blocks = [];
+
+  Written.Parsers.Inlines = [];
+
+  Written.Parsers.Blocks.select = function() {
+    var selected;
+    selected = [];
+    Array.prototype.slice.call(arguments).map(function(name) {
+      var struct;
+      struct = Written.Parsers.Blocks.find(function(struct) {
+        return struct.node === name;
+      });
+      if (struct != null) {
+        return selected.push(struct);
+      }
+    });
+    return [Written.Parsers.Blocks["default"]].concat(selected);
+  };
+
+  Written.Parsers.Inlines.select = function() {
+    var selected;
+    selected = [];
+    Array.prototype.slice.call(arguments).map(function(name) {
+      var struct;
+      struct = Written.Parsers.Inlines.find(function(struct) {
+        return struct.node === name;
+      });
+      if (struct != null) {
+        return selected.push(struct);
+      }
+    });
+    return selected;
+  };
+
+  Written.Parsers.register = function(struct) {
+    var type;
+    type = void 0;
+    if (struct.type === 'block') {
+      type = Written.Parsers.Blocks;
+    } else if (struct.type === 'inline') {
+      type = Written.Parsers.Inlines;
+    } else {
+      raise('error: Written.Parsers can either be "block" or "inline"');
+      return;
+    }
+    Written.Parsers.normalize(struct);
+    if (struct["default"]) {
+      return type["default"] = struct;
+    } else {
+      return type.push(struct);
+    }
+  };
+
+  Written.Parsers.normalize = function(struct) {
+    if (!struct.getRange) {
+      struct.getRange = function(node, offset, walker) {
+        var range;
+        range = document.createRange();
+        if (node.firstChild == null) {
+          range.setStart(node, 0);
+        } else {
+          while (walker.nextNode()) {
+            if (walker.currentNode.length < offset) {
+              offset -= walker.currentNode.length;
+              continue;
+            }
+            range.setStart(walker.currentNode, offset);
+            break;
+          }
+        }
+        range.collapse(true);
+        return range;
+      };
+    }
+    if (Object.prototype.toString === struct.toString) {
+      return struct.toString = function(node) {
+        return node.textContent;
+      };
+    }
+  };
 
   Written.Parsers.Block = (function() {
     function Block() {}
@@ -544,11 +579,12 @@
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Written.Document = (function() {
-    function Document(text, parsers) {
+    function Document(text, parsers, cursor) {
       this.toString = bind(this.toString, this);
       this.applyTo = bind(this.applyTo, this);
       this.toHTMLString = bind(this.toHTMLString, this);
       this.freeze = bind(this.freeze, this);
+      this.cursor = cursor;
       this.blocks = parsers.parse(parsers.blocks, text);
       this.blocks.forEach((function(_this) {
         return function(block) {
