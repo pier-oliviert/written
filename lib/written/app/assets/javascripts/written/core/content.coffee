@@ -15,7 +15,7 @@ class @Written
 
     parsers = options.parsers
     if !parsers?
-      parsers = new Written.Parsers.all()
+      parsers = new Written.Parsers()
 
     @parsers = parsers
 
