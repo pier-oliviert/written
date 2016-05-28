@@ -29,7 +29,7 @@
       this.element().addEventListener('keydown', this.cursor);
       parsers = options.parsers;
       if (parsers == null) {
-        parsers = new Written.Parsers.all();
+        parsers = new Written.Parsers();
       }
       this.parsers = parsers;
       text = this.toString();
