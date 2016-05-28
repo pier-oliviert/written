@@ -1,15 +1,9 @@
 class @Written
-  constructor: (el) ->
+  constructor: (el, options = {}) ->
     el.instance = this
     el.dataset.editor = "written"
     @element = ->
       return el
-
-    text = @toString()
-    @element().textContent = ''
-
-    @observer = new Written.Observer(@element(), @changed)
-    @initialize = @initialize.bind(this, text)
 
     @element().addEventListener 'dragover', @over
     @element().addEventListener('drop', @preventDefaults)
@@ -19,34 +13,32 @@ class @Written
     @element().addEventListener('keydown', @redo)
     @element().addEventListener('keydown', @cursor)
 
-
-  preventDefaults: (e) ->
-    e.preventDefault()
-
-  initialize: (text, parsers) ->
-    @observer.pause()
+    parsers = options.parsers
     if !parsers?
-      parsers = Written.Parsers
+      parsers = new Written.Parsers.all()
 
     @parsers = parsers
+
+    text = @toString()
+    @element().textContent = ''
 
     if @element().contentEditable != 'true'
       @element().contentEditable = 'true'
 
-    document = new Written.Document(text, @parsers)
-    cursor = new Written.Cursor(@element(), window.getSelection())
-    document.cursor = cursor
+    cursor = new Written.Cursor(@element(), window.getSelection(), @parsers)
+    document = new Written.Document(text, @parsers, cursor)
 
-    
     @render(document)
 
     document.cursor.focus(document.toString().length)
 
     @history = new Written.History(document)
-
+    @observer = new Written.Observer(@element(), @changed)
     @dispatch('written:initialized')
-    @observer.resume()
 
+
+  preventDefaults: (e) ->
+    e.preventDefault()
 
   dispatch: (name, data = {}) =>
     event = new CustomEvent(name, bubbles: true, detail: data)
@@ -59,8 +51,8 @@ class @Written
 
   changed: (e) =>
     oldDocument = @history.current
-    newDocument = new Written.Document(@toString(), @parsers)
-    newDocument.cursor = new Written.Cursor(@element(), window.getSelection())
+    cursor = new Written.Cursor(@element(), window.getSelection(), @parsers)
+    newDocument = new Written.Document(@toString(), @parsers, cursor)
     if @element().children.length > 0 && oldDocument.toString().localeCompare(newDocument.toString()) == 0
       return
 
@@ -70,14 +62,14 @@ class @Written
     @dispatch('written:changed', document: newDocument)
 
   cursor: =>
-    @history.current.cursor = new Written.Cursor(@element(), window.getSelection())
+    @history.current.cursor = new Written.Cursor(@element(), window.getSelection(), @parsers)
 
   linefeed: (e) =>
     return unless e.which == 13
     e.preventDefault()
     e.stopPropagation()
 
-    cursor = new Written.Cursor(@element(), window.getSelection())
+    cursor = new Written.Cursor(@element(), window.getSelection(), @parsers)
     @observer.pause =>
 
       offset = cursor.offset
@@ -94,8 +86,7 @@ class @Written
         lines.push('')
         cursor.offset += 1
 
-      document = new Written.Document(lines.join('\n'), @parsers)
-      document.cursor = cursor
+      document = new Written.Document(lines.join('\n'), @parsers, cursor)
       if cursor.offset < document.toString().length
         cursor.offset += 1
 
@@ -132,7 +123,7 @@ class @Written
   toString: =>
     texts = []
     for node in @element().childNodes
-      content = Written.Parsers.toString(node).split('\n')
+      content = @parsers.toString(node).split('\n')
       texts.push content.join('\n')
 
     texts.join '\n'

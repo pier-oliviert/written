@@ -1,29 +1,14 @@
-@Written.Parsers = new class
-  constructor: ->
-    @blocks = []
-    @inlines = []
+class @Written.Parsers
+  constructor: (blocks, inlines) ->
+    @blocks = blocks || [Written.Parsers.Blocks.default].concat(Written.Parsers.Blocks)
+    @inlines = inlines || Written.Parsers.Inlines
     @nodes = {}
+
+    for struct in @blocks.concat(@inlines)
+      @nodes[struct.node] = struct
 
     @blocks.parse = @parseBlocks.bind(this, @blocks)
     @inlines.parse = @parseInlines.bind(this, @inlines)
-
-  register: (struct) ->
-    type = undefined
-    if struct.type == 'block'
-      type = @blocks
-    else if struct.type == 'inline'
-      type = @inlines
-    else
-      raise 'error: Written.Parsers can either be "block" or "inline"'
-      return
-
-    @normalize(struct)
-    if struct.default
-      type.default = struct
-    else
-      type.push struct
-
-    @nodes[struct.node] = struct
 
   parse: (parsers, text) ->
     parsers.parse(text)
@@ -72,28 +57,6 @@
 
     content
 
-  normalize: (struct) ->
-    if !struct.getRange
-      struct.getRange = (node, offset, walker) ->
-        range = document.createRange()
-
-        if !node.firstChild?
-          range.setStart(node, 0)
-        else
-          while walker.nextNode()
-            if walker.currentNode.length < offset
-              offset -= walker.currentNode.length
-              continue
-
-            range.setStart(walker.currentNode, offset)
-            break
-
-        range.collapse(true)
-        range
-
-    if Object.prototype.toString == struct.toString
-      struct.toString = (node) ->
-        node.textContent
 
   find: (parsers, str) ->
     parser = undefined
@@ -117,6 +80,68 @@
     else
       node.textContent
 
+Written.Parsers.Blocks = []
+Written.Parsers.Inlines = []
+
+Written.Parsers.Blocks.select = ->
+  selected = []
+  Array.prototype.slice.call(arguments).map (name) ->
+    struct = Written.Parsers.Blocks.find (struct) ->
+      struct.node == name
+    if struct?
+      selected.push struct
+
+  [Written.Parsers.Blocks.default].concat(selected)
+
+Written.Parsers.Inlines.select = ->
+  selected = []
+  Array.prototype.slice.call(arguments).map (name) ->
+    struct = Written.Parsers.Inlines.find (struct) ->
+      struct.node == name
+    if struct?
+      selected.push struct
+
+  selected
+
+Written.Parsers.register = (struct) ->
+  type = undefined
+  if struct.type == 'block'
+    type = Written.Parsers.Blocks
+  else if struct.type == 'inline'
+    type = Written.Parsers.Inlines
+  else
+    raise 'error: Written.Parsers can either be "block" or "inline"'
+    return
+
+  Written.Parsers.normalize(struct)
+  if struct.default
+    type.default = struct
+  else
+    type.push struct
+
+
+Written.Parsers.normalize = (struct) ->
+  if !struct.getRange
+    struct.getRange = (node, offset, walker) ->
+      range = document.createRange()
+
+      if !node.firstChild?
+        range.setStart(node, 0)
+      else
+        while walker.nextNode()
+          if walker.currentNode.length < offset
+            offset -= walker.currentNode.length
+            continue
+
+          range.setStart(walker.currentNode, offset)
+          break
+
+      range.collapse(true)
+      range
+
+  if Object.prototype.toString == struct.toString
+    struct.toString = (node) ->
+      node.textContent
 
 class Written.Parsers.Block
   outerText: ->

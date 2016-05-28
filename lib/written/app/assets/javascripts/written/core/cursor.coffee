@@ -1,8 +1,9 @@
 class Written.Cursor
-  constructor: (element, selection) ->
+  constructor: (element, selection, parsers) ->
     @element = ->
       element
     @selection = selection
+    @parsers = parsers
     children = Array.prototype.slice.call(@element().children, 0)
     @offset = selection.focusOffset
 
@@ -15,7 +16,7 @@ class Written.Cursor
         child = node.previousSibling
 
         while child
-          @offset += Written.Parsers.toString(child).length
+          @offset += @parsers.toString(child).length
           child = child.previousSibling
 
         if node instanceof HTMLLIElement
@@ -27,7 +28,7 @@ class Written.Cursor
     for child in @element().children
       if child == node
         break
-      @offset += Written.Parsers.toString(child).length
+      @offset += @parsers.toString(child).length
       @offset += 1
 
     @currentNode = ->
@@ -39,7 +40,7 @@ class Written.Cursor
 
     element = @element().firstElementChild
     while element && element != node
-      offset -= Written.Parsers.toString(element).length
+      offset -= @parsers.toString(element).length
       element = element.nextElementSibling
 
     offset
@@ -53,12 +54,12 @@ class Written.Cursor
     if node is undefined
       node = @element().firstElementChild
 
-    while node.nextElementSibling && Written.Parsers.toString(node).length < offset
-      offset -= Written.Parsers.toString(node).length + 1
+    while node.nextElementSibling && @parsers.toString(node).length < offset
+      offset -= @parsers.toString(node).length + 1
       node = node.nextElementSibling
 
 
-    range = Written.Parsers.getRange(node, Math.min(offset, Written.Parsers.toString(node).length), document.createTreeWalker(node, NodeFilter.SHOW_TEXT))
+    range = @parsers.getRange(node, Math.min(offset, @parsers.toString(node).length), document.createTreeWalker(node, NodeFilter.SHOW_TEXT))
 
     if @offsetDiffersBetween(@selection, range)
       @selection.removeAllRanges()

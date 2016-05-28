@@ -1,7 +1,8 @@
 #= require ./parsers
 
 class Written.Document
-  constructor: (text, parsers) ->
+  constructor: (text, parsers, cursor) ->
+    @cursor = cursor
     @blocks = parsers.parse(parsers.blocks, text)
 
     @blocks.forEach (block) =>
