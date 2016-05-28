@@ -35,7 +35,6 @@
 To get started with Written, you just need to add the standalone file to your project and initialize your editor.
 ~~~javascript main.js
 editor = new Written(el)
-editor.initialize()
 ~~~
 For Written to work as expected, you *need to include the CSS file that comes with it*. The content of the editor can be retrieve manually or it can update automatically an input field that is determined in advance.
 ### Manually get the content of the editor
@@ -45,9 +44,8 @@ document.querySelector('#Editor').instance.history.current.toHTMLString()
 ### Configure Written to update an input field
 ~~~javascript main.js
 editor = new Written(el, {
-onChange: document.querySelector("input[type='text']")
+  onChange: document.querySelector("input[type='text']")
 })
-editor.initialize()
 ~~~
 The ~~~javascript onChange~~~ attribute can either be a DOM element or a function. See the API for more information.
 ## Under the hood
@@ -79,12 +77,11 @@ It can also take control of the user's input for the time the attachment needs c
 This way, the editor can keep track of the changes before and after the attachment took control.
 ## Add Written to your project
 ~~~javascript main.js
-editor = new Written(el)
-editor.initialize()
+new Written(el)
 ~~~
 ## A final note
 This text is entirely editable. You can edit it to your liking to test the different feature Written supports.
-Enjoy :)"</section>
+Enjoy :)</section>
     </main>
 
     <footer>
