@@ -41,10 +41,12 @@ For Written to work as expected, you *need to include the CSS file that comes wi
 ~~~javascript
 document.querySelector('#Editor').instance.history.current.toHTMLString()
 ~~~
-### Configure Written to update an input field
+### Listen for changes
 ~~~javascript main.js
-editor = new Written(el, {
-  onChange: document.querySelector("input[type='text']")
+editor = new Written(el)
+el.addEventListener('written:changed', function(event) {
+  event.detail.document.toString() // Markdown version
+  event.detail.document.toHTMLString() // Rendered version
 })
 ~~~
 The ~~~javascript onChange~~~ attribute can either be a DOM element or a function. See the API for more information.
