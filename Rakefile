@@ -62,6 +62,7 @@ task :compile do
   Bundler.require(:default, ENV['RAILS_ENV'])
   
   environment = Sprockets::Environment.new
+  environment.js_compressor = :uglifier
 
   environment.append_path 'lib/written/app/assets/javascripts'
   environment.append_path 'lib/written/app/assets/stylesheets'
