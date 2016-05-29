@@ -28,7 +28,8 @@ class Code extends Written.Parsers.Inline
 
 Written.Parsers.register {
   parser: Code
-  node: 'code'
+  name: 'code'
+  nodes: ['code']
   type: 'inline'
   rule: /((~{3})([a-z]+)?)\s(.+)?(~{3})/gi
   highlightWith: (callback) ->

@@ -16,7 +16,8 @@ class Italic extends Written.Parsers.Inline
 
 Written.Parsers.register {
   parser: Italic
-  node: 'em'
+  name: 'italic'
+  nodes: ['em']
   type: 'inline'
   rule: /((_{1})([^_]+)(_{1}))/gi
 }

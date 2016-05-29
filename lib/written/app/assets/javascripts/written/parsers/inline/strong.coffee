@@ -16,7 +16,8 @@ class Strong extends Written.Parsers.Inline
 
 Written.Parsers.register {
   parser: Strong
-  node: 'strong'
+  name: 'strong'
+  nodes: ['strong']
   type: 'inline'
   rule: /((\*{1})([^\*]+)(\*{1}))/gi
 }

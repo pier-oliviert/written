@@ -17,7 +17,8 @@ class Link extends Written.Parsers.Inline
 
 Written.Parsers.register {
   parser: Link
-  node: 'a'
+  name: 'link'
+  nodes: ['a']
   type: 'inline'
   rule: /!{0}(\[([^\]]+)\])(\(([^\)]+)\))/gi
 }

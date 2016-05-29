@@ -65,7 +65,8 @@ class OList extends Written.Parsers.Block
 
 Written.Parsers.register {
   parser: OList
-  node: 'ol'
+  name: 'olist'
+  nodes: ['ol']
   type: 'block'
   rule: RULE
   getRange: (node, offset, walker) ->

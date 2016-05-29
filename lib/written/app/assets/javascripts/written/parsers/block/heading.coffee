@@ -34,29 +34,29 @@ class Header extends Written.Parsers.Block
         node.appendChild(document.createTextNode(text))
     node
 
-[1,2,3,4,5,6].forEach (size) ->
-  Written.Parsers.register {
-    parser: Header
-    node: "h#{size}"
-    type: 'block'
-    rule: /^((#{1,6})\s)(.*)$/i
-    getRange: (node, offset, walker) ->
-      range = document.createRange()
+Written.Parsers.register {
+  parser: Header
+  name: 'header'
+  nodes: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+  type: 'block'
+  rule: /^((#{1,6})\s)(.*)$/i
+  getRange: (node, offset, walker) ->
+    range = document.createRange()
 
-      if !node.firstChild?
-        range.setStart(node, 0)
-      else
-        while walker.nextNode()
-          if walker.currentNode.length < offset
-            offset -= walker.currentNode.length
-            continue
+    if !node.firstChild?
+      range.setStart(node, 0)
+    else
+      while walker.nextNode()
+        if walker.currentNode.length < offset
+          offset -= walker.currentNode.length
+          continue
 
-          range.setStart(walker.currentNode, offset)
-          break
+        range.setStart(walker.currentNode, offset)
+        break
 
-      range.collapse(true)
-      range
+    range.collapse(true)
+    range
 
-    toString: (node) ->
-      node.textContent
-  }
+  toString: (node) ->
+    node.textContent
+}

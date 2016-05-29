@@ -65,7 +65,8 @@ class Quote extends Written.Parsers.Block
 
 Written.Parsers.register {
   parser: Quote
-  node: 'blockquote'
+  name: 'quote'
+  nodes: ['blockquote']
   type: 'block'
   rule: RULE
 }

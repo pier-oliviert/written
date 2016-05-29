@@ -63,7 +63,8 @@ class Code extends Written.Parsers.Block
 
 Written.Parsers.register {
   parser: Code
-  node: 'pre'
+  name: 'code'
+  nodes: ['pre']
   type: 'block'
   rule: /^((~{3})([a-z]+)?)(?:\s(.*))?/i
   toString: (node) ->

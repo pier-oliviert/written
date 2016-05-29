@@ -37,7 +37,8 @@ class Paragraph extends Written.Parsers.Block
 
 Written.Parsers.register {
   parser: Paragraph
-  node: 'p'
+  name: 'paragraph'
+  nodes: ['p']
   type: 'block'
   rule: /.*/i
   default: true

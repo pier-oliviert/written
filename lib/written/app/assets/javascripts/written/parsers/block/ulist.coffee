@@ -62,7 +62,8 @@ class UList extends Written.Parsers.Block
 
 Written.Parsers.register {
   parser: UList
-  node: 'ul'
+  name: 'ulist'
+  nodes: ['ul']
   type: 'block'
   rule: RULE
   getRange: (node, offset, walker) ->

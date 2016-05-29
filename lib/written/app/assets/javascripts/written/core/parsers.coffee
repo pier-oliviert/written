@@ -13,7 +13,8 @@ class @Written.Parsers
     @nodes = {}
 
     for struct in @blocks.concat(@inlines)
-      @nodes[struct.node] = struct
+      for node in struct.nodes
+        @nodes[node] = struct
 
     @blocks.parse = @parseBlocks.bind(this, @blocks)
     @inlines.parse = @parseInlines.bind(this, @inlines)
@@ -95,7 +96,7 @@ Written.Parsers.Blocks.select = (nodes) ->
   selected = []
   nodes.map (name) ->
     struct = Written.Parsers.Blocks.find (struct) ->
-      struct.node == name
+      struct.name == name
     if struct?
       selected.push struct
 
@@ -105,7 +106,7 @@ Written.Parsers.Inlines.select = (nodes) ->
   selected = []
   nodes.map (name) ->
     struct = Written.Parsers.Inlines.find (struct) ->
-      struct.node == name
+      struct.name == name
     if struct?
       selected.push struct
 

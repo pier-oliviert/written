@@ -61,7 +61,8 @@ class Image extends Written.Parsers.Block
 
 Written.Parsers.register {
   parser: Image
-  node: 'figure'
+  name: 'image'
+  nodes: ['figure']
   type: 'block'
   rule: /^(!{1}\[([^\]]*)\])(\(([^\s]*)?\))$/i
   toString: (node) ->
