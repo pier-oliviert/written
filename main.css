@@ -3,23 +3,31 @@ html, body {
   background: #B5C2D6;
 }
 
-header {
+body > header {
   text-align: center;
+  margin: 2em 0;
 }
 
 header > h1 {
   font-family: Dancing Script;
   font-size: 5em;
+  margin: 0.3em 0;
 }
 
-header > h1 a {
+header > h1 a, header > nav a {
   color: white;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-header > h1 a:hover {
+header > h1 a:hover,
+header > nav a:hover {
   color: #E2E9F3;
+}
+
+header > nav a {
+  text-decoration: underline;
+  margin: 0 2em;
 }
 
 main > p {

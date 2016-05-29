@@ -347,7 +347,7 @@
 (function() {
   this.Written.Parsers = (function() {
     function Parsers(parsers) {
-      var i, len, ref, struct;
+      var i, j, len, len1, node, ref, ref1, struct;
       if (parsers == null) {
         parsers = {};
       }
@@ -365,7 +365,11 @@
       ref = this.blocks.concat(this.inlines);
       for (i = 0, len = ref.length; i < len; i++) {
         struct = ref[i];
-        this.nodes[struct.node] = struct;
+        ref1 = struct.nodes;
+        for (j = 0, len1 = ref1.length; j < len1; j++) {
+          node = ref1[j];
+          this.nodes[node] = struct;
+        }
       }
       this.blocks.parse = this.parseBlocks.bind(this, this.blocks);
       this.inlines.parse = this.parseInlines.bind(this, this.inlines);
@@ -468,7 +472,7 @@
     nodes.map(function(name) {
       var struct;
       struct = Written.Parsers.Blocks.find(function(struct) {
-        return struct.node === name;
+        return struct.name === name;
       });
       if (struct != null) {
         return selected.push(struct);
@@ -483,7 +487,7 @@
     nodes.map(function(name) {
       var struct;
       struct = Written.Parsers.Inlines.find(function(struct) {
-        return struct.node === name;
+        return struct.name === name;
       });
       if (struct != null) {
         return selected.push(struct);
@@ -885,7 +889,8 @@
 
   Written.Parsers.register({
     parser: Code,
-    node: 'pre',
+    name: 'code',
+    nodes: ['pre'],
     type: 'block',
     rule: /^((~{3})([a-z]+)?)(?:\s(.*))?/i,
     toString: function(node) {
@@ -965,34 +970,33 @@
 
   })(Written.Parsers.Block);
 
-  [1, 2, 3, 4, 5, 6].forEach(function(size) {
-    return Written.Parsers.register({
-      parser: Header,
-      node: "h" + size,
-      type: 'block',
-      rule: /^((#{1,6})\s)(.*)$/i,
-      getRange: function(node, offset, walker) {
-        var range;
-        range = document.createRange();
-        if (node.firstChild == null) {
-          range.setStart(node, 0);
-        } else {
-          while (walker.nextNode()) {
-            if (walker.currentNode.length < offset) {
-              offset -= walker.currentNode.length;
-              continue;
-            }
-            range.setStart(walker.currentNode, offset);
-            break;
+  Written.Parsers.register({
+    parser: Header,
+    name: 'header',
+    nodes: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+    type: 'block',
+    rule: /^((#{1,6})\s)(.*)$/i,
+    getRange: function(node, offset, walker) {
+      var range;
+      range = document.createRange();
+      if (node.firstChild == null) {
+        range.setStart(node, 0);
+      } else {
+        while (walker.nextNode()) {
+          if (walker.currentNode.length < offset) {
+            offset -= walker.currentNode.length;
+            continue;
           }
+          range.setStart(walker.currentNode, offset);
+          break;
         }
-        range.collapse(true);
-        return range;
-      },
-      toString: function(node) {
-        return node.textContent;
       }
-    });
+      range.collapse(true);
+      return range;
+    },
+    toString: function(node) {
+      return node.textContent;
+    }
   });
 
 }).call(this);
@@ -1086,7 +1090,8 @@
 
   Written.Parsers.register({
     parser: Image,
-    node: 'figure',
+    name: 'image',
+    nodes: ['figure'],
     type: 'block',
     rule: /^(!{1}\[([^\]]*)\])(\(([^\s]*)?\))$/i,
     toString: function(node) {
@@ -1191,7 +1196,8 @@
 
   Written.Parsers.register({
     parser: OList,
-    node: 'ol',
+    name: 'olist',
+    nodes: ['ol'],
     type: 'block',
     rule: RULE,
     getRange: function(node, offset, walker) {
@@ -1298,7 +1304,8 @@
 
   Written.Parsers.register({
     parser: Paragraph,
-    node: 'p',
+    name: 'paragraph',
+    nodes: ['p'],
     type: 'block',
     rule: /.*/i,
     "default": true
@@ -1407,7 +1414,8 @@
 
   Written.Parsers.register({
     parser: Quote,
-    node: 'blockquote',
+    name: 'quote',
+    nodes: ['blockquote'],
     type: 'block',
     rule: RULE
   });
@@ -1508,7 +1516,8 @@
 
   Written.Parsers.register({
     parser: UList,
-    node: 'ul',
+    name: 'ulist',
+    nodes: ['ul'],
     type: 'block',
     rule: RULE,
     getRange: function(node, offset, walker) {
@@ -1600,7 +1609,8 @@
 
   Written.Parsers.register({
     parser: Code,
-    node: 'code',
+    name: 'code',
+    nodes: ['code'],
     type: 'inline',
     rule: /((~{3})([a-z]+)?)\s(.+)?(~{3})/gi,
     highlightWith: function(callback) {
@@ -1647,7 +1657,8 @@
 
   Written.Parsers.register({
     parser: Italic,
-    node: 'em',
+    name: 'italic',
+    nodes: ['em'],
     type: 'inline',
     rule: /((_{1})([^_]+)(_{1}))/gi
   });
@@ -1692,7 +1703,8 @@
 
   Written.Parsers.register({
     parser: Link,
-    node: 'a',
+    name: 'link',
+    nodes: ['a'],
     type: 'inline',
     rule: /!{0}(\[([^\]]+)\])(\(([^\)]+)\))/gi
   });
@@ -1737,7 +1749,8 @@
 
   Written.Parsers.register({
     parser: Strong,
-    node: 'strong',
+    name: 'strong',
+    nodes: ['strong'],
     type: 'inline',
     rule: /((\*{1})([^\*]+)(\*{1}))/gi
   });

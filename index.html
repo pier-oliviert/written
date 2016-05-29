@@ -14,6 +14,10 @@
     <header>
       <h1><a href='/'>Written</a></h1>
       <a href="https://github.com/pothibo/written"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+      <nav>
+      <a href='/markdown.html'>Markdown Syntax</a>
+      <a href='/parsers.html'>Configure Parsers</a>
+      </nav>
     </header>
 
     <main>
@@ -31,7 +35,7 @@
 - Block-level and inline code snippets (The code highlighting is done by third party like [Prism.js](http://prismjs.com/download.html));
 - Images;
 - Links;
-- Strong words;
+- Bold words;
 - Italic words;
 To get started with Written, you just need to add the standalone file to your project and initialize your editor.
 ~~~javascript main.js
@@ -50,7 +54,6 @@ el.addEventListener('written:changed', function(event) {
   event.detail.document.toHTMLString() // Rendered version
 })
 ~~~
-The ~~~javascript onChange~~~ attribute can either be a DOM element or a function. See the API for more information.
 ## Under the hood
 Using technologies like Mutation Observers, Written was built to be supported by all evergreen browsers.
 This editor is build around 3 concepts:
@@ -70,21 +73,23 @@ The block parsers have options that can help customize their behaviour. Some of 
 Also, block parsers could want from the editor _not_ to parse their inner content. One such case would be a code block parser where the content of the code snippet requires to be kept intact (and code highlighted, maybe?).
 ### Inline parsers
 Inline parsers are much more straightforward, they are triggered on some rules and change their content to something else. Think of all the words here that are either bold, italic. These are inline parsers.
-### Enable a subset of the available parsers
-Written was built to be able to either remove or create new parsers for you to use. While the inner API already works to support that, the public API is not yet finished and so this section will explain how to do it when it's ready.
-## Attachments
-Attachments are useful when you want the editor to give you control for a short period of time to do something that would fall outside the scope of the editor.
-One example of that, would be the image upload to AWS builtin with Written. While there is an image parser that is builtin within Written, the job of uploading a new image to AWS and update the text content to include that new images falls outside the job of a text editor. An attachment was created to support all those features.
-The attachments are special as they are bound to DOM nodes. You tell the Written to what kind of node you want the attachment to be bound to and Written will instantiate a new instance on every node that it finds.
-It can also take control of the user's input for the time the attachment needs control. With the image upload example, the attachment takes control during the upload process and once completed, update the text content of the node is bound to and then relinquish its control over to the Editor.
-This way, the editor can keep track of the changes before and after the attachment took control.
+### Cherry-pick your parsers
+With Written, you can select what parser you want to enable. This way, you decide what feature to enable for your user. For example, if you'd wish to only support headers and italic and bold parsers, here how you would do it:
+~~~javascript
+var parsers = new Written.Parsers({
+  blocks: ['header'],
+  inlines: ['italic', 'bold']
+})
+new Written(el, {parsers: parsers});
+~~~
+You can look at the [parser](/parsers.html) page for more information.
 ## Add Written to your project
 ~~~javascript main.js
 new Written(el)
 ~~~
 ## A final note
 This text is entirely editable. You can edit it to your liking to test the different feature Written supports.
-  Enjoy :)</div>
+Enjoy :)</div>
       </section>
     </main>
 

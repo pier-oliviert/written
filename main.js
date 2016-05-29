@@ -6,7 +6,7 @@ Array.prototype.slice.call(document.querySelectorAll('main > section')).forEach(
   var toggles = Array.prototype.slice.call(section.querySelectorAll('nav > a'))
   var blocks, inlines
 
-  if (editor.dataset.blocks) {
+  if (editor.dataset.blocks !== undefined) {
     blocks = editor.dataset.blocks.split(',')
   }
 
