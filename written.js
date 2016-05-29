@@ -346,10 +346,21 @@
 }).call(this);
 (function() {
   this.Written.Parsers = (function() {
-    function Parsers(blocks, inlines) {
+    function Parsers(parsers) {
       var i, len, ref, struct;
-      this.blocks = blocks || [Written.Parsers.Blocks["default"]].concat(Written.Parsers.Blocks);
-      this.inlines = inlines || Written.Parsers.Inlines;
+      if (parsers == null) {
+        parsers = {};
+      }
+      if (parsers.blocks != null) {
+        this.blocks = Written.Parsers.Blocks.select(parsers.blocks);
+      } else {
+        this.blocks = [Written.Parsers.Blocks["default"]].concat(Written.Parsers.Blocks);
+      }
+      if (parsers.inlines != null) {
+        this.inlines = Written.Parsers.Inlines.select(parsers.inlines);
+      } else {
+        this.inlines = Written.Parsers.Inlines;
+      }
       this.nodes = {};
       ref = this.blocks.concat(this.inlines);
       for (i = 0, len = ref.length; i < len; i++) {
@@ -451,10 +462,10 @@
 
   Written.Parsers.Inlines = [];
 
-  Written.Parsers.Blocks.select = function() {
+  Written.Parsers.Blocks.select = function(nodes) {
     var selected;
     selected = [];
-    Array.prototype.slice.call(arguments).map(function(name) {
+    nodes.map(function(name) {
       var struct;
       struct = Written.Parsers.Blocks.find(function(struct) {
         return struct.node === name;
@@ -466,10 +477,10 @@
     return [Written.Parsers.Blocks["default"]].concat(selected);
   };
 
-  Written.Parsers.Inlines.select = function() {
+  Written.Parsers.Inlines.select = function(nodes) {
     var selected;
     selected = [];
-    Array.prototype.slice.call(arguments).map(function(name) {
+    nodes.map(function(name) {
       var struct;
       struct = Written.Parsers.Inlines.find(function(struct) {
         return struct.node === name;

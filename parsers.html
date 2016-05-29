@@ -17,14 +17,17 @@
     </header>
 
     <main>
-      <p>With Written, you can cherry-pick which parser you want to use. Every instance below was initialized with different parsers. You can see how easy it is to select what you need.</p>
+      <p>With Written, you can cherry-pick which parser you want to use. Each instances below were initialized with different parsers.</p>
       <section>
         <nav>
           <a href='javascript:void(0);'>Markdown</a>
           <a href='javascript:void(0);' data-selected>Rendered</a>
         </nav>
         <div class='rendered'></div>
-        <div class='editor' data-blocks='h1,h2,h3,ul'>
+        <div class='editor' data-blocks='h1,h2,h3,ul'># Some headers and unordered list are accepted
+- But, the ordered list is not;
+1. See, for yourself.
+#### 4th level headers and below aren't supported on this editor
         </div>
         <pre data-highlight=true class='language-javascript'><code>// Only use h1, h2, h3, ul as block parsers
 // Use all inlines parsers
@@ -70,7 +73,10 @@ new Written(document.querySelector('.editor'), {parsers: parsers})</code></pre>
         </div>
         <pre data-highlight=true class='language-javascript'><code>// Only use h1, h2, h3 as block parsers
 // Only use links, strong and italic as inline parsers
-var parsers = new Written.Parsers({blocks: ['h1', 'h2', 'h3'], inlines: ['a', 'strong', 'em']})
+var parsers = new Written.Parsers({
+  blocks: ['h1', 'h2', 'h3'],
+  inlines: ['a', 'strong', 'em']
+})
 new Written(document.querySelector('.editor'), {parsers: parsers})</code></pre>
       </section>
       </section>

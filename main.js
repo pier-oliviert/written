@@ -7,14 +7,14 @@ Array.prototype.slice.call(document.querySelectorAll('main > section')).forEach(
   var blocks, inlines
 
   if (editor.dataset.blocks) {
-    blocks = Written.Parsers.Blocks.select.apply(Written.Parsers.Blocks, editor.dataset.blocks.split(','))
+    blocks = editor.dataset.blocks.split(',')
   }
 
   if (editor.dataset.inlines) {
-    inlines = Written.Parsers.Inlines.select.apply(Written.Parsers.Inlines, editor.dataset.inlines.split(','))
+    inlines = editor.dataset.inlines.split(',')
   }
 
-  parsers = new Written.Parsers(blocks, inlines)
+  parsers = new Written.Parsers({blocks: blocks, inlines: inlines})
 
   if (parsers.get('pre')) {
     parsers.get('pre').highlightWith(function(element) {
