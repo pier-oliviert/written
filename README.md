@@ -51,7 +51,7 @@ Those documents are then stored in a history that Written then use to implement 
 
 ### On Change Events
 
-Written dispatch an event whenever text changes on the Editor. To receive update when the editor change, just add an event listener to ~~~written:changed~~~ event.
+Written dispatch an event whenever text changes on the Editor. To receive update when the editor change, just add an event listener to ```written:changed``` event.
 
 ~~~javascript
   document.addEventListener('written:changed', function(event) {
@@ -60,3 +60,14 @@ Written dispatch an event whenever text changes on the Editor. To receive update
     document.toString() // Markdown version
   })
 ~~~
+
+## Test the editor locally
+
+If you want to test the editor on your machine, the easiest way is with [Ruby](httsp://www.ruby-lang.org).
+
+```ruby
+$ bundle install
+$ bundle exec rake server
+```
+
+This will launch a server that runs the Editor with on ```localhost:3000```.
