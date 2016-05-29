@@ -1,0 +1,86 @@
+<!dOCTYPE html>
+<html>
+  <head>
+      <link rel='stylesheet' href='written.css' />
+      <script src='written.js'></script>
+
+      <link rel='stylesheet' href='prism.css' />
+      <script src='prism.js'></script>
+
+      <link rel='stylesheet' href='main.css' />
+  </head>
+  <body>
+
+    <header>
+      <h1><a href='/'>Written</a></h1>
+      <a href="https://github.com/pothibo/written"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    </header>
+
+    <main>
+      <p>With Written, you can cherry-pick which parser you want to use. Every instance below was initialized with different parsers. You can see how easy it is to select what you need.</p>
+      <section>
+        <nav>
+          <a href='javascript:void(0);'>Markdown</a>
+          <a href='javascript:void(0);' data-selected>Rendered</a>
+        </nav>
+        <div class='rendered'></div>
+        <div class='editor' data-blocks='h1,h2,h3,ul'>
+        </div>
+        <pre data-highlight=true class='language-javascript'><code>// Only use h1, h2, h3, ul as block parsers
+// Use all inlines parsers
+var parsers = new Written.Parsers({blocks: ['h1', 'h2', 'h3', 'ul']})
+new Written(document.querySelector('.editor'), {parsers: parsers})</code></pre>
+      </section>
+
+      <section>
+        <nav>
+          <a href='javascript:void(0);'>Markdown</a>
+          <a href='javascript:void(0);' data-selected>Rendered</a>
+        </nav>
+        <div class='rendered'></div>
+        <div class='editor' data-inlines='a,strong'># Documentation
+        </div>
+        <pre data-highlight=true class='language-javascript'><code>// Use all block parsers
+// Only use links and strong words as inline parsers
+var parsers = new Written.Parsers({inlines: ['a', 'strong']})
+new Written(document.querySelector('.editor'), {parsers: parsers})</code></pre>
+      </section>
+
+      <section>
+        <nav>
+          <a href='javascript:void(0);'>Markdown</a>
+          <a href='javascript:void(0);' data-selected>Rendered</a>
+        </nav>
+        <div class='rendered'></div>
+        <div class='editor' data-blocks=''># Documentation
+        </div>
+        <pre data-highlight=true class='language-javascript'><code>// Use no block parser
+// Use all inline parsers
+var parsers = new Written.Parsers({blocks: []})
+new Written(document.querySelector('.editor'), {parsers: parsers})</code></pre>
+      </section>
+
+      <section>
+        <nav>
+          <a href='javascript:void(0);'>Markdown</a>
+          <a href='javascript:void(0);' data-selected>Rendered</a>
+        </nav>
+        <div class='rendered'></div>
+        <div class='editor' data-blocks='h1,h2,h3' data-inline='a,strong,em'># Documentation
+        </div>
+        <pre data-highlight=true class='language-javascript'><code>// Only use h1, h2, h3 as block parsers
+// Only use links, strong and italic as inline parsers
+var parsers = new Written.Parsers({blocks: ['h1', 'h2', 'h3'], inlines: ['a', 'strong', 'em']})
+new Written(document.querySelector('.editor'), {parsers: parsers})</code></pre>
+      </section>
+      </section>
+    </main>
+
+    <footer>
+      <link href='https://fonts.googleapis.com/css?family=Dancing+Script' rel='stylesheet' type='text/css'>
+      <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,400italic' rel='stylesheet' type='text/css'>
+      <link href='https://fonts.googleapis.com/css?family=Lora:700,700italic' rel='stylesheet' type='text/css'>
+      <script src='main.js'></script>
+    </footer>
+  </body>
+</html>

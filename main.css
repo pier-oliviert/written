@@ -1,4 +1,5 @@
 html, body {
+  font-family: Open Sans;
   background: #B5C2D6;
 }
 
@@ -21,27 +22,33 @@ header > h1 a:hover {
   color: #E2E9F3;
 }
 
-main {
+main > p {
+  max-width: 800px;
+  margin: 1em auto 2.5em auto;
+  color: white;
+  font-size: 1.1em;
+  text-align: center;
+}
+
+main > section {
   color: #4E5358;
-  min-height: 600px;
   max-width: 900px;
   width: 80%;
   min-width: 300px;
   background: white;
   box-shadow: 0 1px 5px #858B94;
 
-  margin: 0 auto;
-  font-family: Open Sans;
+  margin: 0 auto 4em auto;
 }
 
-main > nav {
+main > section > nav {
   display: flex;
   justify-content: flex-end;
   padding: 1em 2em;
   text-align: right;
 }
 
-main > nav > a {
+main > section > nav > a {
   padding: 0.3em 0.7em;
   color: #B5C2D6;
   font-size: 0.7em;
@@ -52,74 +59,115 @@ main > nav > a {
   text-decoration: none;
 }
 
-main > nav > a[data-selected] {
+main > section > nav > a[data-selected] {
   background: #B5C2D6;
   color: white;
 }
 
-main > nav > a:hover:not([data-selected]) {
+main > section > nav > a:hover:not([data-selected]) {
   background: #E4E9F1;
 }
 
-main > nav > a:first-child {
+main > section > nav > a:first-child {
   border-radius: 0.3em 0 0 0.3em;
   border-right: none;
 }
 
-main > nav > a:last-child {
+main > section > nav > a:last-child {
   border-radius: 0 0.3em 0.3em 0;
 }
 
-#Editor {
+section > .editor, section > .rendered {
+  min-height: 200px;
+  max-height: 60vh;
+  overflow-y: scroll;
+}
+
+section > .editor {
   outline: none;
 }
 
-#Editor {
+section > .editor {
   line-height: 1.5em;
 }
 
-#Editor h1,
-#Editor h2,
-#Editor h3,
-#Editor h4,
-#Editor h5,
-#Editor h6 {
+section > .editor h1,
+section > .editor h2,
+section > .editor h3,
+section > .editor h4,
+section > .editor h5,
+section > .editor h6 {
   font-family: Lora;
   line-height: 1em;
-  margin: 1.8em 0 1em 0;
+  margin: 1.3em 0 1em 0;
 }
 
-#Editor p {
+section > .editor p {
   margin: 1em 0;
 }
 
 
-#Editor pre {
+section > .editor pre {
   font-size: 0.8em;
 }
 
-#Editor :not(pre) > code[class*="language-"] {
+section > .editor :not(pre) > code[class*="language-"] {
   font-size: 0.9em;
 }
 
-#Rendered {
+section > .rendered {
   padding: 1em;
 }
 
-#Rendered pre {
+section > .rendered pre {
   padding: 0;
 }
 
-#Rendered pre > header {
+section > .rendered pre > header {
   padding: 0.3em 0.8em;
   font-size: 0.8em;
   font-style: italic;
   background: rgba(255,255,255,0.2);
   border-bottom: 1px solid rgba(200,200,200,0.3);
   text-shadow: none;
+  text-align: right;
 }
 
-#Rendered pre > code {
+section > .rendered pre > code {
   display: block;
   padding: 0.3em 0.8em;
+  font-size: 0.8em;
+}
+
+section > .rendered h1 { font-size: 3em; }
+section > .rendered h2 { font-size: 1.4em; }
+section > .rendered h3 { font-size: 1.25em; }
+section > .rendered h4 { font-size: 1.15em; }
+section > .rendered h5 { font-size: 1.05em; }
+section > .rendered h6 { font-size: 0.9em; }
+
+section > .rendered h1,
+section > .rendered h2,
+section > .rendered h3,
+section > .rendered h4,
+section > .rendered h5,
+section > .rendered h6 {
+  font-family: Lora;
+  line-height: 1em;
+  margin: 1.3em 0 1em 0;
+}
+
+section > .rendered figure {
+  margin: 1.5em auto 1em;
+  text-align: center;
+}
+
+section > .rendered figure figcaption {
+  font-size: 0.8em;
+  font-style: italic;
+}
+
+section > .rendered blockquote {
+  background: rgba(200, 200, 200, 0.3);
+  padding: 0.2em 0.4em;
 }

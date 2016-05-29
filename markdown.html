@@ -17,13 +17,14 @@
     </header>
 
     <main>
-      <nav>
-        <a href='javascript:void(0);'>Markdown</a>
-        <a href='javascript:void(0);' data-selected>Rendered</a>
-      </nav>
-      <section id='Rendered'></section>
-      <section id='Editor'># Markdown syntax
-Here's a list of all the markdown syntax that is supported by Written out of the box. You can [cherry-pick](/documentation.html#parsers) the features you want for your project. For simplicity's sake, here's a list of all the syntax available.
+      <section>
+        <nav>
+          <a href='javascript:void(0);'>Markdown</a>
+          <a href='javascript:void(0);' data-selected>Rendered</a>
+        </nav>
+        <div class='rendered'></div>
+        <div class='editor'># Markdown syntax
+Here's a list of all the markdown syntax that is supported by Written out of the box. You can [cherry-pick](/parsers.html) the parsers you want for your project. For simplicity's sake, here's a list of all the syntax available.
 You can toggle the text between *Markdown* and *Rendered* to see the difference.
 ## Block syntax
 Block syntax are elements that are recognized if you specify them at the beginning of a line.
@@ -52,7 +53,8 @@ console.log('Code blocks');
 ## Inline syntax
 These are triggered within a line. Most block level allow inline syntax to be used inside them (to the exception of code blocks where you might want to have a syntax highlighter deal with the content of the code block).
 ### Example
-[A link](https://github.com/pothibo/written) with *bold text* or _italic text_ or even an ~~~ inline code block~~~</section>
+[A link](https://github.com/pothibo/written) with *bold text* or _italic text_ or even an ~~~ inline code block~~~</div>
+      </section>
     </main>
 
     <footer>
