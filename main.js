@@ -44,4 +44,5 @@ Rendered.innerHTML = written.history.current.toHTMLString()
 Array.prototype.slice.call(Rendered.querySelectorAll('code')).forEach(function(code) {
     Prism.highlightElement(code, false)
   })
-Rendered.remove()
+
+Editor.remove()

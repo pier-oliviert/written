@@ -9,7 +9,16 @@ header {
 header > h1 {
   font-family: Dancing Script;
   font-size: 5em;
+}
+
+header > h1 a {
   color: white;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+header > h1 a:hover {
+  color: #E2E9F3;
 }
 
 main {
