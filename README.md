@@ -16,8 +16,7 @@ The editor also allows you to cherry-pick the markdown feature you wish to suppo
 To start using Written, you just have to create a new editor.
 
 ~~~javascript
-var editor = new Written(document.querySelector('#Editor'))
-editor.initialize()
+new Written(document.querySelector('#Editor'))
 ~~~
 
 You can retrieve the document either as a markdown text, or a HTML string. For storage purposes, you might want to store the HTML string from the current document
@@ -34,13 +33,13 @@ Written allows you to enable the parsers you wish. The parsers are split into tw
 The editor needs to be configured before it is initialized. Here's how you customize the parsers.
 
 ~~~javascript
-var editor = new Written(document.querySelector('#Editor'))
-editor.parsers.use('block', ['Header', 'Code', 'UList', 'OList'])
-editor.parsers.use('inline', 'all')
-editor.initialize()
+var parsers = new Written.Parsers({
+  blocks: ['header', 'code', 'ulist', 'olist']
+})
+var editor = new Written(document.querySelector('#Editor'), {parsers: parsers})
 ~~~
 
-You can specify ~~~ 'all'~~~ if you wish to use all the available parsers for a given type.
+Not specifying parsers will enable *all parsers*.
 
 ### Document
 
