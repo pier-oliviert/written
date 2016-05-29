@@ -1,7 +1,15 @@
 class @Written.Parsers
-  constructor: (blocks, inlines) ->
-    @blocks = blocks || [Written.Parsers.Blocks.default].concat(Written.Parsers.Blocks)
-    @inlines = inlines || Written.Parsers.Inlines
+  constructor: (parsers = {}) ->
+    if parsers.blocks?
+      @blocks = Written.Parsers.Blocks.select(parsers.blocks)
+    else
+      @blocks = [Written.Parsers.Blocks.default].concat(Written.Parsers.Blocks)
+
+    if parsers.inlines?
+      @inlines = Written.Parsers.Inlines.select(parsers.inlines)
+    else
+      @inlines = Written.Parsers.Inlines
+
     @nodes = {}
 
     for struct in @blocks.concat(@inlines)
@@ -83,9 +91,9 @@ class @Written.Parsers
 Written.Parsers.Blocks = []
 Written.Parsers.Inlines = []
 
-Written.Parsers.Blocks.select = ->
+Written.Parsers.Blocks.select = (nodes) ->
   selected = []
-  Array.prototype.slice.call(arguments).map (name) ->
+  nodes.map (name) ->
     struct = Written.Parsers.Blocks.find (struct) ->
       struct.node == name
     if struct?
@@ -93,9 +101,9 @@ Written.Parsers.Blocks.select = ->
 
   [Written.Parsers.Blocks.default].concat(selected)
 
-Written.Parsers.Inlines.select = ->
+Written.Parsers.Inlines.select = (nodes) ->
   selected = []
-  Array.prototype.slice.call(arguments).map (name) ->
+  nodes.map (name) ->
     struct = Written.Parsers.Inlines.find (struct) ->
       struct.node == name
     if struct?
