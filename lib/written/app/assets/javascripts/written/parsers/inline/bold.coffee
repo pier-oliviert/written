@@ -1,4 +1,4 @@
-class Strong extends Written.Parsers.Inline
+class Bold extends Written.Parsers.Inline
   constructor: (match) ->
     @match = match
 
@@ -15,8 +15,8 @@ class Strong extends Written.Parsers.Inline
     Written.toHTML("<strong>#{@match[3]}</strong>")
 
 Written.Parsers.register {
-  parser: Strong
-  name: 'strong'
+  parser: Bold
+  name: 'bold'
   nodes: ['strong']
   type: 'inline'
   rule: /((\*{1})([^\*]+)(\*{1}))/gi
