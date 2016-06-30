@@ -1,0 +1,21 @@
+<div data-workspace># It's a header
+## Smaller header
+### And smaller</div>
+
+<div data-expected data-editor="written" contenteditable="true">
+  <h1># It's a header</h1>
+  <h2>## Smaller header</h2>
+  <h3>### And smaller</h3>
+</div>
+
+<script>
+  var test = Specter.Test
+  test.description = 'Should render a headers properly'
+  test.setup = function() {
+    var parsers = new Written.Parsers({
+      blocks: ['header']
+    })
+    new Written(this.workspace, {parsers: parsers});
+  }
+
+</script>

@@ -1,0 +1,15 @@
+<div data-workspace>A Paragraph</div>
+
+<div data-expected data-editor="written" contenteditable="true">
+  <p>A Paragraph</p>
+</div>
+
+<script>
+  var test = Specter.Test
+  test.description = 'Should render a paragraph properly'
+  test.setup = function() {
+    new Written(this.workspace);
+  }
+
+</script>
+

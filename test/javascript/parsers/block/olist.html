@@ -1,0 +1,23 @@
+<div data-workspace>1. One
+2. Two
+3. Three</div>
+
+<div data-expected data-editor="written" contenteditable="true"><ol>
+    <li>1. One</li>
+    <li>2. Two</li>
+    <li>3. Three</li>
+  </ol>
+</div>
+
+<script>
+  var test = Specter.Test
+  test.description = 'Should render ordered list properly'
+  test.setup = function() {
+    var parsers = new Written.Parsers({
+      blocks: ['olist']
+    })
+    new Written(this.workspace, {parsers: parsers});
+  }
+
+</script>
+

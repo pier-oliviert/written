@@ -1,0 +1,23 @@
+<div data-workspace>- A test
+- On list</div>
+
+<div data-expected data-editor="written" contenteditable="true">
+  <ul>
+    <li>- A test</li>
+    <li>- On list</li>
+  </ul>
+</div>
+
+<script>
+  var test = Specter.Test
+  test.description = 'Should render a paragraph properly'
+  test.setup = function() {
+    var parsers = new Written.Parsers({
+      blocks: ['ulist']
+    })
+    new Written(this.workspace, {parsers: parsers});
+  }
+
+</script>
+
+

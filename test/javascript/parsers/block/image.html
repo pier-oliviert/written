@@ -1,0 +1,17 @@
+<div data-workspace>![It's an image](img)</div>
+
+<div data-expected data-editor="written" contenteditable="true">
+<figure><div contenteditable="false"><img src="img"></div><figcaption>![It's an image](img)</figcaption></figure>
+</div>
+
+<script>
+  var test = Specter.Test
+  test.description = 'Should render an image properly'
+  test.setup = function() {
+    var parsers = new Written.Parsers({
+      blocks: ['image']
+    })
+    new Written(this.workspace, {parsers: parsers});
+  }
+
+</script>
