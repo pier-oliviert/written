@@ -69,6 +69,4 @@ task :compile do
 
   manifest = Sprockets::Manifest.new(environment, 'build/manifest.json')
   manifest.compile('written.*')
-
-
 end

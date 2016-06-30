@@ -8,5 +8,7 @@ module WrittenDevApplication
     if Rails.env.test?
       paths['app/assets'] << '../browser'
     end
+
+    Specter::Engine.paths['test/javascript'] = Pathname.new(Rails.root) + '../javascript'
   end
 end

@@ -1,0 +1,23 @@
+<div data-workspace>~~~ruby
+"Hello world!";
+~~~</div>
+
+<div data-expected data-editor="written" contenteditable="true">
+  <pre>
+    <code class="language-ruby">~~~ruby
+"Hello world!";
+~~~</code>
+    </pre>
+</div>
+
+<script>
+  var test = Specter.Test
+  test.description = 'Should render a code block and detect its language'
+  test.setup = function() {
+    var parsers = new Written.Parsers({
+      blocks: ['code']
+    })
+    new Written(this.workspace, {parsers: parsers});
+  }
+
+</script>
