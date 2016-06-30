@@ -12,4 +12,4 @@ gem 'thin'
 
 gem 'byebug', group: [:development, :test]
 
-gem 'specterjs', group: [:development], require: 'Specter', path: '~/Develop/specter.js'
+gem 'specterjs', group: [:development], require: 'Specter', git: 'https://github.com/pothibo/specter.js.git'

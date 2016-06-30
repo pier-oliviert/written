@@ -1,5 +1,6 @@
-PATH
-  remote: ~/Develop/specter.js
+GIT
+  remote: https://github.com/pothibo/specter.js.git
+  revision: 16942e4c9647f4c7eb3115ee21f0f312c4c3c329
   specs:
     specterjs (0.0.1)
       rails
