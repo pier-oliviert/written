@@ -1,0 +1,18 @@
+<div data-workspace>Some ~~~ruby code~~~.</div>
+
+<div data-expected data-editor="written" contenteditable="true">
+  <p>Some <code class="language-ruby">~~~ruby code~~~</code>.</p>
+</div>
+
+<script>
+  var test = Specter.Test
+  test.description = 'Should render inline code properly'
+  test.setup = function() {
+    var parsers = new Written.Parsers({
+      inline: ['code']
+    })
+    new Written(this.workspace, {parsers: parsers});
+  }
+
+</script>
+

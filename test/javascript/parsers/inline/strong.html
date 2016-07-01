@@ -1,0 +1,19 @@
+<div data-workspace>Some *bold words*.</div>
+
+<div data-expected data-editor="written" contenteditable="true">
+  <p>Some <strong>*bold words*</strong>.</p>
+</div>
+
+<script>
+  var test = Specter.Test
+  test.description = 'Should render inline code properly'
+  test.setup = function() {
+    var parsers = new Written.Parsers({
+      inline: ['strong']
+    })
+    new Written(this.workspace, {parsers: parsers});
+  }
+
+</script>
+
+
