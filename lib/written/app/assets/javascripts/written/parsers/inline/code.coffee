@@ -9,7 +9,8 @@ class Code extends Written.Parsers.Inline
     @match[0].length
 
   toEditor: =>
-    node = Written.toHTML("<code>#{this.match[0]}</code>")
+    node = Written.toHTML("<code></code>")
+    node.textContent = this.match[0]
     if @match[3]?
       node.classList.add("language-#{@match[3]}")
 

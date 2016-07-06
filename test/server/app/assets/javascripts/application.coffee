@@ -5,7 +5,7 @@ document.removeEventListener('DOMContentLoaded', Prism.highlightAll)
 
 element = document.getElementById('Editor')
 if element?
-  parsers = new Written.Parsers({blocks: ['header', 'code', 'image', 'ulist', 'olist', 'quote'], inlines: ['bold', 'italic', 'code', 'link']})
+  parsers = new Written.Parsers({blocks: [], inlines: ['code']})
 
   parsers.get('pre')?.highlightWith (element) ->
     Prism.highlightElement(element, false)
