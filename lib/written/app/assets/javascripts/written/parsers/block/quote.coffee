@@ -56,8 +56,6 @@ class Quote extends Written.Parsers.Block
         else
           p.appendChild(document.createTextNode(text.toString()))
 
-      if index < @content.length - 1
-        p.insertAdjacentHTML('beforeend', '\n')
       node.appendChild(p)
 
     node
