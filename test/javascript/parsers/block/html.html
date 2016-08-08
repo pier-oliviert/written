@@ -1,0 +1,17 @@
+<div data-workspace>&lt;iframe src='test'>&lt;/iframe></div>
+
+<div data-expected data-editor="written" contenteditable="true">
+  <div>&lt;iframe src='test'>&lt;/iframe></div>
+</div>
+
+<script>
+  var test = Specter.Test
+  test.setup = function() {
+    var parsers = new Written.Parsers({
+      blocks: ['html']
+    })
+    new Written(this.workspace, {parsers: parsers});
+  }
+
+</script>
+
