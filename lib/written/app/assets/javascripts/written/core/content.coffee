@@ -30,7 +30,8 @@ class @Written
 
     @render(document)
 
-    document.cursor.focus(document.toString().length)
+    if options.focus == true
+      document.cursor.focus(document.toString().length)
 
     @history = new Written.History(document)
     @observer = new Written.Observer(@element(), @changed)
