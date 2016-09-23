@@ -28,7 +28,7 @@ class @Written
     cursor = new Written.Cursor(@element(), window.getSelection(), @parsers)
     document = new Written.Document(text, @parsers, cursor)
 
-    @render(document)
+    @render(document, false)
 
     if options.focus == true
       document.cursor.focus(document.toString().length)
@@ -95,9 +95,11 @@ class @Written
       @history.push(document)
 
 
-  render: (document) =>
+  render: (document, focus = true) =>
     document.applyTo(@element())
     Written.Attachments.attach(this)
+    if focus
+      document.cursor.focus()
 
   undo: (e) =>
     if e.code == 'KeyZ' && e.metaKey && !e.shiftKey

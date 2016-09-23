@@ -38,8 +38,6 @@ class Written.Document
     for element in elements
       element.remove()
 
-    @cursor.focus()
-
   findNodeFor: (block, remaining) ->
     node = block.toEditor()
 
