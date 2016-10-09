@@ -93,6 +93,7 @@ class @Written
 
       @render(document)
       @history.push(document)
+      @dispatch('written:changed', document: document)
 
 
   render: (document, focus = true) =>
@@ -111,6 +112,7 @@ class @Written
     if document = @history.previous()
       @history.current = document
       @render(document)
+      @dispatch('written:changed', document: document)
 
   redo: (e) =>
     if e.code == 'KeyZ' && e.metaKey && e.shiftKey
@@ -122,6 +124,7 @@ class @Written
     if document = @history.next()
       @history.current = document
       @render(@history.current)
+      @dispatch('written:changed', document: document)
 
   toString: =>
     texts = []
