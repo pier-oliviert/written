@@ -5,10 +5,12 @@ class @Written
     @element = ->
       return el
 
+    if options.multiline is undefined
+      options.multiline = true
     @element().addEventListener 'dragover', @over
     @element().addEventListener('drop', @preventDefaults)
 
-    @element().addEventListener('keypress', @linefeed)
+    @element().addEventListener('keypress', @linefeed.bind(this, options.multiline))
     @element().addEventListener('keydown', @undo)
     @element().addEventListener('keydown', @redo)
     @element().addEventListener('keydown', @cursor)
@@ -65,10 +67,11 @@ class @Written
   cursor: =>
     @history.current.cursor = new Written.Cursor(@element(), window.getSelection(), @parsers)
 
-  linefeed: (e) =>
+  linefeed: (allowed = true, e) =>
     return unless e.which == 13
     e.preventDefault()
     e.stopPropagation()
+    return unless allowed
 
     cursor = new Written.Cursor(@element(), window.getSelection(), @parsers)
     @observer.pause =>
