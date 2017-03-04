@@ -7,7 +7,7 @@ class Image extends Written.Attachments.Base
 
   template: ->
     Written.toHTML("<div id='WrittenOverlay' contenteditable=false>
-        <div id='WrittenDialog'>
+        <div id='WrittenDialog' data-attachment>
           <header>
             <div class='progress'></div>
             <button data-action='cancel'>Cancel</button>
