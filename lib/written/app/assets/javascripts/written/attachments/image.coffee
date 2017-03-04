@@ -6,8 +6,8 @@ class Image extends Written.Attachments.Base
     @node.querySelector('img').addEventListener 'click', @select.bind(this, @node)
 
   template: ->
-    Written.toHTML("<div id='WrittenOverlay' contenteditable=false>
-        <div id='WrittenDialog' data-attachment>
+    Written.toHTML("<div id='WrittenOverlay' contenteditable=false data-attachment>
+        <div id='WrittenDialog'>
           <header>
             <div class='progress'></div>
             <button data-action='cancel'>Cancel</button>
