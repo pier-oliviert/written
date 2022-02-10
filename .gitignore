@@ -1,6 +1,0 @@
-.DS_Store
-tmp/
-secrets.*
-*.log
-node_modules
-build/
